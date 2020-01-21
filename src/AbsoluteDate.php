@@ -16,7 +16,7 @@ class AbsoluteDate
     private $datetime;
 
     /**
-     * Date constructor.
+     * AbsoluteDate constructor.
      * @param string $date Date as string
      *                     If none is provided then the current date in the UTC timezone is used
      * @param string $format Format to parse the provided date
