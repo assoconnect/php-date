@@ -1,0 +1,32 @@
+{
+    "name": "assoconnect/php-date",
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/assoconnect/php-date/"
+        }
+    ],
+    "type": "library",
+    "description": "PHP object to handle dates without time",
+    "keywords": ["php", "date"],
+    "homepage": "https://github.com/assoconnect/php-date/",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AssoConnect\\PHPDate\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AssoConnect\\PHPDate\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5",
+        "symfony/phpunit-bridge": "^5.0",
+        "doctrine/dbal": "^2.10",
+        "symfony/serializer": "^5.0"
+    },
+    "require": {
+    }
+}
