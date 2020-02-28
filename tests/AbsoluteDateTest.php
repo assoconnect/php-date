@@ -94,4 +94,55 @@ class AbsoluteDateTest extends TestCase
         $date = AbsoluteDate::createInTimezone(new \DateTimeZone('America/Los_Angeles'), $datetime);
         $this->assertSame('2019-12-27', $date->format());
     }
+
+    public function testFromTimestamp(): void
+    {
+        $date = new \DateTimeImmutable('2020-02-28');
+        $date = AbsoluteDate::fromTimestamp($date->getTimestamp());
+
+        $this->assertSame('2020-02-28 00:00:00', $date->format('Y-m-d H:i:s'));
+    }
+
+    public function testToTimestamp(): void
+    {
+        $date = new AbsoluteDate('2020-02-28');
+
+        $this->assertSame($date->toTimestamp(), mktime(0, 0, 0));
+    }
+
+    public function testToDateTimeImmutable(): void
+    {
+        $date = new AbsoluteDate();
+
+        $dateTime = $date->toDateTimeImmutable();
+
+        $this->assertEquals('00:00:00', $dateTime->format('H:i:s'));
+    }
+
+    public function testToDateTime(): void
+    {
+        $date = new AbsoluteDate();
+
+        $dateTime = $date->toDateTime();
+
+        $this->assertEquals('00:00:00', $dateTime->format('H:i:s'));
+    }
+
+    public function testModifyTimeShouldNotChangeTime(): void
+    {
+        $date = new AbsoluteDate();
+
+        $modifiedDate = $date->modify('+10 minutes');
+
+        $this->assertEquals($date, $modifiedDate);
+    }
+
+    public function testModifyDate(): void
+    {
+        $date = new AbsoluteDate('2020-02-28');
+
+        $modifiedDate = $date->modify('+3 days');
+
+        $this->assertEquals('2020-03-02', $modifiedDate->format());
+    }
 }

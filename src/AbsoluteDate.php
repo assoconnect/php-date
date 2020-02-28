@@ -11,9 +11,9 @@ class AbsoluteDate
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
     /**
-     * @var \DateTimeInterface
+     * @var \DateTimeImmutable
      */
-    private $datetime;
+    private $dateTime;
 
     /**
      * AbsoluteDate constructor.
@@ -26,22 +26,17 @@ class AbsoluteDate
     {
         $timezone = new \DateTimeZone('UTC');
 
-        if ($date === 'now') {
-            $this->datetime = new \DateTime('@' . time());
-            $this->datetime->setTime(0, 0, 0, 0);
+        if (null === $format) {
+            $datetime = new \DateTimeImmutable('now' === $date ? sprintf('@%d', time()) : $date);
         } else {
-            if (!$format) {
-                $format = self::DEFAULT_DATE_FORMAT;
-            }
-            $format .= 'H:i:s';
-            $date .= '00:00:00';
-
-            $this->datetime = \DateTime::createFromFormat($format, $date, $timezone);
+            $datetime = \DateTimeImmutable::createFromFormat($format, $date, $timezone);
         }
 
-        if (false === $this->datetime) {
+        if (false === $datetime) {
             throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
         }
+
+        $this->dateTime = $datetime->setTime(0, 0);
     }
 
     /**
@@ -52,7 +47,7 @@ class AbsoluteDate
      */
     public function format(string $format = self::DEFAULT_DATE_FORMAT): string
     {
-        return $this->datetime->format($format);
+        return $this->dateTime->format($format);
     }
 
     /**
@@ -79,5 +74,44 @@ class AbsoluteDate
         $datetime->setTimezone($timezone);
 
         return new self($datetime->format(self::DEFAULT_DATE_FORMAT));
+    }
+
+    public static function fromTimestamp(int $timestamp): AbsoluteDate
+    {
+        return new self(sprintf('@%d', $timestamp));
+    }
+
+    public function toTimestamp(): int
+    {
+        return $this->dateTime->getTimestamp();
+    }
+
+
+    public static function fromDateTime(\DateTimeInterface $dateTime): AbsoluteDate
+    {
+        return new self($dateTime->format(self::DEFAULT_DATE_FORMAT));
+    }
+
+    public function toDateTime(): \DateTime
+    {
+        $dateTime = new \DateTime();
+
+        return $dateTime->setTimestamp($this->dateTime->getTimestamp());
+    }
+
+
+    public function toDateTimeImmutable(): \DateTimeImmutable
+    {
+        return $this->dateTime;
+    }
+
+    /**
+     * Returns a new instance of absolute date
+     */
+    public function modify(string $modify): AbsoluteDate
+    {
+        $newDateTime = $this->dateTime->modify($modify);
+
+        return self::fromDateTime($newDateTime);
     }
 }
