@@ -18,26 +18,19 @@ class AbsoluteDate
     /**
      * AbsoluteDate constructor.
      * @param string $date Date as string
-     *                     If none is provided then the current date in the UTC timezone is used
      * @param string $format Format to parse the provided date
-     *                     If none is given then the Y-m-d format is used
      */
-    public function __construct(string $date = 'now', string $format = null)
+    public function __construct(string $date, string $format = null)
     {
-        $timezone = new \DateTimeZone('UTC');
-
-        if ($date === 'now') {
-            $this->datetime = new \DateTime('@' . time());
-            $this->datetime->setTime(0, 0, 0, 0);
-        } else {
-            if (!$format) {
-                $format = self::DEFAULT_DATE_FORMAT;
-            }
-            $format .= 'H:i:s';
-            $date .= '00:00:00';
-
-            $this->datetime = \DateTime::createFromFormat($format, $date, $timezone);
+        if (!$format) {
+            $format = self::DEFAULT_DATE_FORMAT;
         }
+
+        $timezone = new \DateTimeZone('UTC');
+        $format .= 'H:i:s';
+        $date .= '00:00:00';
+
+        $this->datetime = \DateTime::createFromFormat($format, $date, $timezone);
 
         if (false === $this->datetime) {
             throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));

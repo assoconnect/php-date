@@ -11,17 +11,6 @@ use Symfony\Bridge\PhpUnit\ClockMock;
 
 class AbsoluteDateTest extends TestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        date_default_timezone_set('UTC');
-        ClockMock::register(AbsoluteDate::class);
-    }
-
-    public function tearDown(): void
-    {
-        ClockMock::withClockMock(false);
-    }
-
     public function testParsingException(): void
     {
         $this->expectException(ParsingException::class);
@@ -30,11 +19,6 @@ class AbsoluteDateTest extends TestCase
 
     public function testResetsNonDatePartsToZeroUnixTimeValues(): void
     {
-        // Using now
-        $date = new AbsoluteDate();
-        $this->assertSame('00:00:00', $date->format('H:i:s'));
-
-        // Using a given date
         $date = new AbsoluteDate('2020-01-01');
         $this->assertSame('00:00:00', $date->format('H:i:s'));
     }
@@ -50,28 +34,6 @@ class AbsoluteDateTest extends TestCase
         $date = new AbsoluteDate('2020-01-02');
         $this->assertSame('2020-01-02', $date->format());
         $this->assertSame('2020-02-01', $date->format('Y-d-m'));
-    }
-
-    public function testNow(): void
-    {
-        ClockMock::withClockMock(0);
-
-        $date = new AbsoluteDate('now');
-        $this->assertSame('1970-01-01', $date->format('Y-m-d'));
-
-        ClockMock::withClockMock(mktime(23, 59, 59, 12, 27, 2019));
-
-        $date = new AbsoluteDate('now');
-        $this->assertSame('2019-12-27', $date->format());
-
-        $date = AbsoluteDate::createInTimezone(new \DateTimeZone('UTC'));
-        $this->assertSame('2019-12-27', $date->format());
-
-        $date = AbsoluteDate::createInTimezone(new \DateTimeZone('Europe/Paris'));
-        $this->assertSame('2019-12-28', $date->format());
-
-        $date = AbsoluteDate::createInTimezone(new \DateTimeZone('America/Los_Angeles'));
-        $this->assertSame('2019-12-27', $date->format());
     }
 
     public function testWithPointInTime(): void
