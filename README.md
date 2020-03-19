@@ -33,7 +33,9 @@ This classes exposes two ways to instanciate a `AbsoluteDate` object:
 
 The `AbsoluteDate::format(string $format)` method can help you format the date as you want. It relies on the format method of the `DateTime` class thus it supports the same formats as the PHP [date()]([https://www.php.net/manual/en/function.date.php) function.
 
- ## Examples
+## Examples
+
+### Using AbsoluteDate with DateTime 
  
  ```php
 <?php
@@ -42,15 +44,24 @@ The `AbsoluteDate::format(string $format)` method can help you format the date a
 $datetime = new \DateTime('@0'); // 1970-01-01 00:00:00+00:00
 
 // The date was 1970-01-01 in Paris at the Epoch time
-new \AbsoluteDate(new \DateTimeZone('Europe/Paris'), $datetime); // 1970-01-01
+\AbsoluteDate::createInTimezone(new \DateTimeZone('Europe/Paris'), $datetime); // 1970-01-01
 
 // The date was still 1969-12-31 in Los Angeles at the same point in time
-new \AbsoluteDate(new \DateTimeZone('America/Los_Angeles'), $datetime); // 1969-12-31
+\AbsoluteDate::createInTimezone(new \DateTimeZone('America/Los_Angeles'), $datetime); // 1969-12-31
+```
+
+### Using AbsoluteDate with a date as string
+
+ ```php
+<?php
+// Default Y-m-d format
+new \AbsoluteDate('1970-01-01'); // 1970-01-01
+
+// Custom format
+new \AbsoluteDate('1970/01/01', 'Y/m/d'); // 1970-01-01
 ```
 
 ## Roadmap
 
-1. Doctrine type for `AbsoluteDate`
-2. Symfony normalizer for `AbsoluteDate`
-3. Create the `RelativeDate` object for the first use case exposing `startsAt` and `endsAt` methods
+1. Create the `RelativeDate` object for the first use case exposing `startsAt` and `endsAt` methods
  

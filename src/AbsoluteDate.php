@@ -16,7 +16,9 @@ class AbsoluteDate
     private $datetime;
 
     /**
-     * AbsoluteDate constructor.
+     * AbsoluteDate constructor from a date as string
+     * Use createInTimezone method if you have a DateTime object or your format includes the hour part
+     *
      * @param string $date Date as string
      * @param string $format Format to parse the provided date
      */
