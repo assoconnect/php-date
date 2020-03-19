@@ -42,10 +42,17 @@ The `AbsoluteDate::format(string $format)` method can help you format the date a
 $datetime = new \DateTime('@0'); // 1970-01-01 00:00:00+00:00
 
 // The date was 1970-01-01 in Paris at the Epoch time
-new \AbsoluteDate(new \DateTimeZone('Europe/Paris'), $datetime); // 1970-01-01
+\AbsoluteDate::createInTimezone(new \DateTimeZone('Europe/Paris'), $datetime); // 1970-01-01
 
 // The date was still 1969-12-31 in Los Angeles at the same point in time
-new \AbsoluteDate(new \DateTimeZone('America/Los_Angeles'), $datetime); // 1969-12-31
+\AbsoluteDate::createInTimezone(new \DateTimeZone('America/Los_Angeles'), $datetime); // 1969-12-31
+
+// You can also instanciate an AbsoluteDate by calling the constructor with an `Y-m-d` like string
+new \AbsoluteDate('2020-01-01'); // eq. to this \AbsoluteDate::createInTimezone(new \DateTimeZone('UTC'), new \DateTime('2020-01-01'))
+
+// The format is optional, but you can provide one if you need
+// For example:
+new \AbsoluteDate('01/01/2020', 'd/m/Y'); 
 ```
 
 ## Roadmap
