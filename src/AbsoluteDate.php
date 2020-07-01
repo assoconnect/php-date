@@ -56,7 +56,7 @@ class AbsoluteDate
      * @link https://www.php.net/manual/fr/datetime.formats.php
      * @return AbsoluteDate
      */
-    public function modify(string $modify) : AbsoluteDate
+    public function modify(string $modify): self
     {
         $this->datetime = $this->datetime->modify($modify);
         return $this;
