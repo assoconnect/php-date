@@ -36,6 +36,16 @@ class AbsoluteDateTest extends TestCase
         $this->assertSame('2020-02-01', $date->format('Y-d-m'));
     }
 
+    public function testModify(): void
+    {
+        $date = new AbsoluteDate('2020-01-02');
+        $date->modify('+2 days');
+        $this->assertSame('2020-01-04', $date->format());
+
+        $date->modify('+1 month');
+        $this->assertSame('2020-02-04', $date->format());
+    }
+
     public function testWithPointInTime(): void
     {
         $date = new AbsoluteDate('2020-01-02');
