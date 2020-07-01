@@ -51,6 +51,18 @@ class AbsoluteDate
     }
 
     /**
+     * Modify the internal datetime
+     * Supported modify strings :
+     * @link https://www.php.net/manual/fr/datetime.formats.php
+     * @return AbsoluteDate
+     */
+    public function modify(string $modify): self
+    {
+        $this->datetime = $this->datetime->modify($modify);
+        return $this;
+    }
+
+    /**
      * Returns date formatted according to the default date format (Y-m-d)
      *
      * @return string
