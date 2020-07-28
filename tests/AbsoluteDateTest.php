@@ -66,4 +66,24 @@ class AbsoluteDateTest extends TestCase
         $date = AbsoluteDate::createInTimezone(new \DateTimeZone('America/Los_Angeles'), $datetime);
         $this->assertSame('2019-12-27', $date->format());
     }
+
+    public function testStartsAt(): void
+    {
+        $date1 = \DateTime::createFromFormat(
+            'Y-m-d H:i:s',
+            '2019-12-27 00:00:00',
+            new \DateTimeZone('Europe/Paris')
+        );
+
+        $date2 = \DateTime::createFromFormat(
+            'Y-m-d H:i:s',
+            '2019-12-27 00:00:00',
+            new \DateTimeZone('America/Los_Angeles')
+        );
+
+        $date = new AbsoluteDate('2019-12-27');
+        
+        $this->assertEquals($date1, $date->startsAt(new \DateTimeZone('Europe/Paris')));
+        $this->assertEquals($date2, $date->startsAt(new \DateTimeZone('America/Los_Angeles')));
+    }
 }
