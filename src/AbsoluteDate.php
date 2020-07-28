@@ -63,6 +63,16 @@ class AbsoluteDate
     }
 
     /**
+     * Return the DateTime for a given DateTimeZone
+     * @param \DateTimeZone $timezone
+     * @return \DateTime
+     */
+    public function startsAt(\DateTimeZone $timezone): \DateTime
+    {
+        return new \DateTime($this->datetime->format(self::DEFAULT_DATE_FORMAT), $timezone);
+    }
+
+    /**
      * Returns date formatted according to the default date format (Y-m-d)
      *
      * @return string
