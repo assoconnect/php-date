@@ -1,7 +1,7 @@
 # The PHP AbsoluteDate object
 
 [![Build Status](https://travis-ci.org/assoconnect/php-date.svg?branch=master)](https://travis-ci.org/assoconnect/php-date)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=assoconnect_php-date&metric=alert_status)](https://sonarcloud.io/dashboard?id=assoconnect_php-date)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=assoconnect-php-date&metric=alert_status)](https://sonarcloud.io/dashboard?id=assoconnect-php-date)
 
 ## Why this object?
 
