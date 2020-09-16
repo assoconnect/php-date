@@ -69,7 +69,22 @@ class AbsoluteDate
      */
     public function startsAt(\DateTimeZone $timezone): \DateTime
     {
-        return new \DateTime($this->datetime->format(self::DEFAULT_DATE_FORMAT), $timezone);
+        return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT, $timezone);
+    }
+
+    /**
+     * Return the DateTime at the end of the day for a given DateTimeZone
+     * @param \DateTimeZone $timezone
+     * @return \DateTime
+     */
+    public function endsAt(\DateTimeZone $timezone): \DateTime
+    {
+        return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT . ' 23:59:59', $timezone);
+    }
+
+    private function getDateTimeFromFormatAndTimezone(string $format, \DateTimeZone $timezone): \DateTime
+    {
+        return new \DateTime($this->format($format), $timezone);
     }
 
     /**
