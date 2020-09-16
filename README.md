@@ -33,6 +33,8 @@ This classes exposes two ways to instanciate a `AbsoluteDate` object:
 
 The `AbsoluteDate::format(string $format)` method can help you format the date as you want. It relies on the format method of the `DateTime` class thus it supports the same formats as the PHP [date()]([https://www.php.net/manual/en/function.date.php) function.
 
+The `AbsoluteDate::startsAt(\DateTimeZone $timezone)` and `AbsoluteDate::endsAt(\DateTimeZone $timezone)` methods return a `DateTime` object in the given timezone. `startsAt` returns a `DateTime` at 00:00:00 whereas `endsAt` returns a `DateTime` at the end of the day (23:59:59).
+
 ## Examples
 
 ### Using AbsoluteDate with DateTime 
@@ -64,4 +66,3 @@ new \AbsoluteDate('1970/01/01', 'Y/m/d'); // 1970-01-01
 ## Roadmap
 
 1. Create the `RelativeDate` object for the first use case exposing `startsAt` and `endsAt` methods
- 
