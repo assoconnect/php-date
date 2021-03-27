@@ -82,7 +82,7 @@ class AbsoluteDateTest extends TestCase
         );
 
         $date = new AbsoluteDate('2019-12-27');
-        
+
         $this->assertEquals($date1, $date->startsAt(new \DateTimeZone('Europe/Paris')));
         $this->assertEquals($date2, $date->startsAt(new \DateTimeZone('America/Los_Angeles')));
     }
