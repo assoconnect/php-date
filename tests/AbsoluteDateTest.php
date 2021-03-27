@@ -7,7 +7,6 @@ namespace AssoConnect\PHPDate\Tests;
 use AssoConnect\PHPDate\AbsoluteDate;
 use AssoConnect\PHPDate\Exception\ParsingException;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ClockMock;
 
 class AbsoluteDateTest extends TestCase
 {
