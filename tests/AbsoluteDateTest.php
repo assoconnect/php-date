@@ -38,11 +38,13 @@ class AbsoluteDateTest extends TestCase
     public function testModify(): void
     {
         $date = new AbsoluteDate('2020-01-02');
-        $date->modify('+2 days');
-        $this->assertSame('2020-01-04', $date->format());
+        $newDate = $date->modify('+2 days');
+        $this->assertNotSame($date, $newDate);
+        $this->assertSame('2020-01-02', $date->format());
+        $this->assertSame('2020-01-04', $newDate->format());
 
-        $date->modify('+1 month');
-        $this->assertSame('2020-02-04', $date->format());
+        $newDate = $date->modify('+1 month');
+        $this->assertSame('2020-02-02', $newDate->format());
     }
 
     public function testWithPointInTime(): void
