@@ -10,33 +10,28 @@ class AbsoluteDate
 {
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
-    /**
-     * @var \DateTimeInterface
-     */
-    private $datetime;
+    private \DateTimeImmutable $datetime;
 
     /**
      * AbsoluteDate constructor from a date as string
      * Use createInTimezone method if you have a DateTime object or your format includes the hour part
      *
      * @param string $date Date as string
-     * @param string $format Format to parse the provided date
+     * @param ?string $format Format to parse the provided date
      */
-    public function __construct(string $date, string $format = null)
+    public function __construct(string $date, string $format = self::DEFAULT_DATE_FORMAT)
     {
-        if (!$format) {
-            $format = self::DEFAULT_DATE_FORMAT;
-        }
-
         $timezone = new \DateTimeZone('UTC');
         $format .= 'H:i:s';
         $date .= '00:00:00';
 
-        $this->datetime = \DateTime::createFromFormat($format, $date, $timezone);
+        $datetime = \DateTimeImmutable::createFromFormat($format, $date, $timezone);
 
-        if (false === $this->datetime) {
+        if (false === $datetime) {
             throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
         }
+
+        $this->datetime = $datetime;
     }
 
     /**
@@ -58,41 +53,34 @@ class AbsoluteDate
      */
     public function modify(string $modify): self
     {
-        $this->datetime = $this->datetime->modify($modify);
-        return $this;
+        return new self($this->datetime->modify($modify)->format(self::DEFAULT_DATE_FORMAT));
     }
 
     /**
      * Return the DateTime for a given DateTimeZone
-     * @param \DateTimeZone $timezone
-     * @return \DateTime
      */
-    public function startsAt(\DateTimeZone $timezone): \DateTime
+    public function startsAt(\DateTimeZone $timezone): \DateTimeImmutable
     {
         return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT, $timezone);
     }
 
     /**
      * Return the DateTime at the end of the day for a given DateTimeZone
-     * @param \DateTimeZone $timezone
-     * @return \DateTime
      */
-    public function endsAt(\DateTimeZone $timezone): \DateTime
+    public function endsAt(\DateTimeZone $timezone): \DateTimeImmutable
     {
         return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT . ' 23:59:59', $timezone);
     }
 
-    private function getDateTimeFromFormatAndTimezone(string $format, \DateTimeZone $timezone): \DateTime
+    private function getDateTimeFromFormatAndTimezone(string $format, \DateTimeZone $timezone): \DateTimeImmutable
     {
-        return new \DateTime($this->format($format), $timezone);
+        return new \DateTimeImmutable($this->format($format), $timezone);
     }
 
     /**
      * Returns date formatted according to the default date format (Y-m-d)
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->format(self::DEFAULT_DATE_FORMAT);
     }
