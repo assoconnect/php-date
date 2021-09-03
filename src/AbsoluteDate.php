@@ -100,4 +100,21 @@ class AbsoluteDate
 
         return new self($datetime->format(self::DEFAULT_DATE_FORMAT));
     }
+
+    /**
+     * Returns an AbsoluteDate object from a relative format in a given timezone
+     *
+     * @param string $relative Relative format to use
+     * @param \DateTimeZone $timezone Timezone to use to get the right date
+     */
+    public static function createRelative(string $relative = 'now', \DateTimeZone $timezone = null): self
+    {
+        if (!$timezone) {
+            $timezone = new \DateTimeZone('UTC');
+        }
+
+        $datetime = new \DateTime($relative, $timezone);
+
+        return self::createInTimezone($timezone, $datetime);
+    }
 }
