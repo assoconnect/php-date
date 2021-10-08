@@ -53,6 +53,10 @@ class AbsoluteDate
      */
     public function modify(string $modify): self
     {
+        if (!preg_match('/^[+-] ?[0-9]+ ?(day|month|year|week)(s)?$/', $modify)) {
+            throw new \DomainException('Only modification on day, week, month and year are allowed');
+        }
+
         return new self($this->datetime->modify($modify)->format(self::DEFAULT_DATE_FORMAT));
     }
 

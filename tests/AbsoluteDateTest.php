@@ -19,38 +19,41 @@ class AbsoluteDateTest extends TestCase
     public function testResetsNonDatePartsToZeroUnixTimeValues(): void
     {
         $date = new AbsoluteDate('2020-01-01');
-        $this->assertSame('00:00:00', $date->format('H:i:s'));
+        self::assertSame('00:00:00', $date->format('H:i:s'));
     }
 
     public function testToString(): void
     {
         $date = new AbsoluteDate('2020-01-01');
-        $this->assertSame('2020-01-01', (string) $date);
+        self::assertSame('2020-01-01', (string) $date);
     }
 
     public function testFormat(): void
     {
         $date = new AbsoluteDate('2020-01-02');
-        $this->assertSame('2020-01-02', $date->format());
-        $this->assertSame('2020-02-01', $date->format('Y-d-m'));
+        self::assertSame('2020-01-02', $date->format());
+        self::assertSame('2020-02-01', $date->format('Y-d-m'));
     }
 
     public function testModify(): void
     {
         $date = new AbsoluteDate('2020-01-02');
         $newDate = $date->modify('+2 days');
-        $this->assertNotSame($date, $newDate);
-        $this->assertSame('2020-01-02', $date->format());
-        $this->assertSame('2020-01-04', $newDate->format());
+        self::assertNotSame($date, $newDate);
+        self::assertSame('2020-01-02', $date->format());
+        self::assertSame('2020-01-04', $newDate->format());
 
         $newDate = $date->modify('+1 month');
-        $this->assertSame('2020-02-02', $newDate->format());
+        self::assertSame('2020-02-02', $newDate->format());
+
+        $this->expectException(\DomainException::class);
+        $date->modify('+1 second');
     }
 
     public function testWithPointInTime(): void
     {
         $date = new AbsoluteDate('2020-01-02');
-        $this->assertSame('2020-01-02', $date->format());
+        self::assertSame('2020-01-02', $date->format());
 
         $datetime = \DateTime::createFromFormat(
             'Y-m-d H:i:s',
@@ -59,13 +62,13 @@ class AbsoluteDateTest extends TestCase
         );
 
         $date = AbsoluteDate::createInTimezone(new \DateTimeZone('UTC'), $datetime);
-        $this->assertSame('2019-12-27', $date->format());
+        self::assertSame('2019-12-27', $date->format());
 
         $date = AbsoluteDate::createInTimezone(new \DateTimeZone('Europe/Paris'), $datetime);
-        $this->assertSame('2019-12-28', $date->format());
+        self::assertSame('2019-12-28', $date->format());
 
         $date = AbsoluteDate::createInTimezone(new \DateTimeZone('America/Los_Angeles'), $datetime);
-        $this->assertSame('2019-12-27', $date->format());
+        self::assertSame('2019-12-27', $date->format());
     }
 
     public function testStartsAt(): void
@@ -84,8 +87,8 @@ class AbsoluteDateTest extends TestCase
 
         $date = new AbsoluteDate('2019-12-27');
 
-        $this->assertEquals($date1, $date->startsAt(new \DateTimeZone('Europe/Paris')));
-        $this->assertEquals($date2, $date->startsAt(new \DateTimeZone('America/Los_Angeles')));
+        self::assertEquals($date1, $date->startsAt(new \DateTimeZone('Europe/Paris')));
+        self::assertEquals($date2, $date->startsAt(new \DateTimeZone('America/Los_Angeles')));
     }
 
     public function testEndsAt(): void
@@ -104,7 +107,7 @@ class AbsoluteDateTest extends TestCase
 
         $date = new AbsoluteDate('2019-12-27');
 
-        $this->assertEquals($date1, $date->endsAt(new \DateTimeZone('Europe/Paris')));
-        $this->assertEquals($date2, $date->endsAt(new \DateTimeZone('America/Los_Angeles')));
+        self::assertEquals($date1, $date->endsAt(new \DateTimeZone('Europe/Paris')));
+        self::assertEquals($date2, $date->endsAt(new \DateTimeZone('America/Los_Angeles')));
     }
 }
