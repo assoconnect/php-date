@@ -68,6 +68,7 @@ class AbsoluteDateTest extends TestCase
         // Valid pattern
         yield ['+1 day', true];
         yield ['1 day ago', true];
+        yield ['last day of this month', true];
     }
 
     public function testWithPointInTime(): void

@@ -51,13 +51,33 @@ class AbsoluteDate
      * @link https://www.php.net/manual/fr/datetime.formats.php
      * @return AbsoluteDate
      */
-    public function modify(string $modify): self
+    public function modify(string $modifier): self
     {
-        if (!preg_match('/^[+-]? ?[0-9]+ ?(day|month|year|week)(s)?( ?ago)?$/', $modify)) {
-            throw new \DomainException('Only modification on day, week, month and year are allowed');
+        $validPatterns = [
+            'day',
+            'days',
+            'month',
+            'months',
+            'year',
+            'years',
+            'week',
+            'weeks',
+            'last',
+            'first',
+            'ago',
+            'this',
+            'of'
+        ];
+        preg_match_all('/([a-z]+)/', $modifier, $matches);
+        $invalidPatterns = array_diff($matches[0], $validPatterns);
+        if ([] !== $invalidPatterns) {
+            throw new \DomainException(sprintf(
+                'Only modification on day, week, month, and year are allowed. Invalid patterns are: %s',
+                implode(', ', $invalidPatterns)
+            ));
         }
 
-        return new self($this->datetime->modify($modify)->format(self::DEFAULT_DATE_FORMAT));
+        return new self($this->datetime->modify($modifier)->format(self::DEFAULT_DATE_FORMAT));
     }
 
     /**
