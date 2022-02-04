@@ -53,7 +53,7 @@ class AbsoluteDate
      */
     public function modify(string $modify): self
     {
-        if (!preg_match('/^[+-] ?[0-9]+ ?(day|month|year|week)(s)?$/', $modify)) {
+        if (!preg_match('/^[+-]? ?[0-9]+ ?(day|month|year|week)(s)?( ?ago)?$/', $modify)) {
             throw new \DomainException('Only modification on day, week, month and year are allowed');
         }
 
