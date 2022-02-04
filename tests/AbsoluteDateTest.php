@@ -35,7 +35,7 @@ class AbsoluteDateTest extends TestCase
         self::assertSame('2020-02-01', $date->format('Y-d-m'));
     }
 
-    public function testModify(): void
+    public function testModifyResultIsCorrect(): void
     {
         $date = new AbsoluteDate('2020-01-02');
         $newDate = $date->modify('+2 days');
@@ -45,9 +45,29 @@ class AbsoluteDateTest extends TestCase
 
         $newDate = $date->modify('+1 month');
         self::assertSame('2020-02-02', $newDate->format());
+    }
 
-        $this->expectException(\DomainException::class);
-        $date->modify('+1 second');
+    /** @dataProvider providerModifyEnforcePattern */
+    public function testModifyEnforcePattern(string $pattern, bool $patternIsValid): void
+    {
+        if ($patternIsValid) {
+            self::expectNotToPerformAssertions();
+        } else {
+            $this->expectException(\DomainException::class);
+        }
+
+        $date = new AbsoluteDate('2020-01-01');
+        $date->modify($pattern);
+    }
+
+    public function providerModifyEnforcePattern(): iterable
+    {
+        // Invalid pattern
+        yield ['+1 second', false];
+
+        // Valid pattern
+        yield ['+1 day', true];
+        yield ['1 day ago', true];
     }
 
     public function testWithPointInTime(): void
