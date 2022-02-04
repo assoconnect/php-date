@@ -82,6 +82,14 @@ class AbsoluteDate
     }
 
     /**
+     * Checks whether the value represented by this object equals to the other.
+     */
+    public function equals(self $other): bool
+    {
+        return $this->__toString() === $other->__toString();
+    }
+
+    /**
      * Returns date formatted according to the default date format (Y-m-d)
      */
     public function __toString(): string

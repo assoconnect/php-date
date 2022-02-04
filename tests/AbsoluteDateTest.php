@@ -110,4 +110,12 @@ class AbsoluteDateTest extends TestCase
         self::assertEquals($date1, $date->endsAt(new \DateTimeZone('Europe/Paris')));
         self::assertEquals($date2, $date->endsAt(new \DateTimeZone('America/Los_Angeles')));
     }
+
+    public function testEquals(): void
+    {
+        $date = new AbsoluteDate('2022-01-01');
+
+        self::assertTrue($date->equals(new AbsoluteDate('2022-01-01')));
+        self::assertFalse($date->equals(new AbsoluteDate('2022-01-02')));
+    }
 }
