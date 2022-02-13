@@ -17,7 +17,7 @@ class AbsoluteDatePeriodTest extends TestCase
             $end = new AbsoluteDate('2021-02-28')
         );
 
-        $this->assertSame($start, $sut->getStart());
-        $this->assertSame($end, $sut->getEnd());
+        self::assertSame($start, $sut->getStart());
+        self::assertSame($end, $sut->getEnd());
     }
 }
