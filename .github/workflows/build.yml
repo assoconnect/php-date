@@ -26,6 +26,8 @@ jobs:
       - run: composer install --prefer-dist --no-progress --no-suggest
       
       - run: vendor/bin/phpcs
+
+      - run: vendor/bin/phpstan
       
       - run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover ./clover.xml --log-junit ./phpunit.report.xml
       
