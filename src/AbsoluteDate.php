@@ -17,7 +17,7 @@ class AbsoluteDate
      * Use createInTimezone method if you have a DateTime object or your format includes the hour part
      *
      * @param string $date Date as string
-     * @param ?string $format Format to parse the provided date
+     * @param string $format Format to parse the provided date
      */
     public function __construct(string $date, string $format = self::DEFAULT_DATE_FORMAT)
     {
@@ -122,12 +122,11 @@ class AbsoluteDate
      *
      * @param \DateTimeZone $timezone Timezone to use to get the right date
      * @param \DateTimeInterface|null $datetime Point in time to find the date from
-     * @return static
      * @throws \Exception
      */
     public static function createInTimezone(\DateTimeZone $timezone, \DateTimeInterface $datetime = null): self
     {
-        $datetime = new \DateTime('@' . ($datetime ? $datetime->getTimestamp() : time()));
+        $datetime = new \DateTime('@' . (null === $datetime ? time() : $datetime->getTimestamp()));
         $datetime->setTimezone($timezone);
 
         return new self($datetime->format(self::DEFAULT_DATE_FORMAT));
@@ -137,11 +136,11 @@ class AbsoluteDate
      * Returns an AbsoluteDate object from a relative format in a given timezone
      *
      * @param string $relative Relative format to use
-     * @param \DateTimeZone $timezone Timezone to use to get the right date
+     * @param ?\DateTimeZone $timezone Timezone to use to get the right date
      */
     public static function createRelative(string $relative = 'now', \DateTimeZone $timezone = null): self
     {
-        if (!$timezone) {
+        if (null === $timezone) {
             $timezone = new \DateTimeZone('UTC');
         }
 
