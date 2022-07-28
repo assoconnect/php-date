@@ -66,7 +66,8 @@ class AbsoluteDate
             'first',
             'ago',
             'this',
-            'of'
+            'of',
+            'previous'
         ];
         preg_match_all('/([a-z]+)/', $modifier, $matches);
         $invalidPatterns = array_diff($matches[0], $validPatterns);
