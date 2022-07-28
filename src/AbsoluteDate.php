@@ -6,7 +6,7 @@ namespace AssoConnect\PHPDate;
 
 use AssoConnect\PHPDate\Exception\ParsingException;
 
-class AbsoluteDate
+class AbsoluteDate implements \Serializable
 {
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
@@ -21,17 +21,26 @@ class AbsoluteDate
      */
     public function __construct(string $date, string $format = self::DEFAULT_DATE_FORMAT)
     {
-        $timezone = new \DateTimeZone('UTC');
-        $format .= 'H:i:s';
-        $date .= '00:00:00';
+        $this->initDatetime($date, $format);
+    }
 
-        $datetime = \DateTimeImmutable::createFromFormat($format, $date, $timezone);
+    /**
+     * @return string[]
+     * @throws \Exception
+     */
+    public function __serialize(): array
+    {
+        return [
+            'date' => $this->serialize(),
+        ];
+    }
 
-        if (false === $datetime) {
-            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
-        }
-
-        $this->datetime = $datetime;
+    /**
+     * @param string[] $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->unserialize($data['date']);
     }
 
     /**
@@ -66,7 +75,8 @@ class AbsoluteDate
             'first',
             'ago',
             'this',
-            'of'
+            'of',
+            'previous'
         ];
         preg_match_all('/([a-z]+)/', $modifier, $matches);
         $invalidPatterns = array_diff($matches[0], $validPatterns);
@@ -147,5 +157,33 @@ class AbsoluteDate
         $datetime = new \DateTime($relative, $timezone);
 
         return self::createInTimezone($timezone, $datetime);
+    }
+
+    private function initDatetime(string $date, string $format): void
+    {
+        $timezone = new \DateTimeZone('UTC');
+        $format .= 'H:i:s';
+        $date .= '00:00:00';
+
+        $datetime = \DateTimeImmutable::createFromFormat($format, $date, $timezone);
+
+        if (false === $datetime) {
+            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
+        }
+
+        $this->datetime = $datetime;
+    }
+
+    public function serialize(): string
+    {
+        return serialize($this->format());
+    }
+
+    /**
+     * @param string $data
+     */
+    public function unserialize($data): void
+    {
+        $this->initDatetime(unserialize($data), self::DEFAULT_DATE_FORMAT);
     }
 }
