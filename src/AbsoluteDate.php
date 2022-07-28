@@ -21,17 +21,25 @@ class AbsoluteDate
      */
     public function __construct(string $date, string $format = self::DEFAULT_DATE_FORMAT)
     {
-        $timezone = new \DateTimeZone('UTC');
-        $format .= 'H:i:s';
-        $date .= '00:00:00';
+        $this->initDatetime($date, $format);
+    }
 
-        $datetime = \DateTimeImmutable::createFromFormat($format, $date, $timezone);
+    /**
+     * @return string[]
+     */
+    public function __serialize(): array
+    {
+        return [
+            'date' => $this->format(),
+        ];
+    }
 
-        if (false === $datetime) {
-            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
-        }
-
-        $this->datetime = $datetime;
+    /**
+     * @param string[] $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->initDatetime($data['date'], self::DEFAULT_DATE_FORMAT);
     }
 
     /**
@@ -66,7 +74,8 @@ class AbsoluteDate
             'first',
             'ago',
             'this',
-            'of'
+            'of',
+            'previous'
         ];
         preg_match_all('/([a-z]+)/', $modifier, $matches);
         $invalidPatterns = array_diff($matches[0], $validPatterns);
@@ -147,5 +156,20 @@ class AbsoluteDate
         $datetime = new \DateTime($relative, $timezone);
 
         return self::createInTimezone($timezone, $datetime);
+    }
+
+    private function initDatetime(string $date, string $format): void
+    {
+        $timezone = new \DateTimeZone('UTC');
+        $format .= 'H:i:s';
+        $date .= '00:00:00';
+
+        $datetime = \DateTimeImmutable::createFromFormat($format, $date, $timezone);
+
+        if (false === $datetime) {
+            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
+        }
+
+        $this->datetime = $datetime;
     }
 }
