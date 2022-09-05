@@ -143,4 +143,21 @@ class AbsoluteDateTest extends TestCase
         self::assertTrue($date->equals(new AbsoluteDate('2022-01-01')));
         self::assertFalse($date->equals(new AbsoluteDate('2022-01-02')));
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function testCreateRelative(): void
+    {
+        $date = AbsoluteDate::createRelative('yesterday', $timezone = new \DateTimeZone('America/Los_Angeles'));
+        $now = new \DateTimeImmutable('yesterday', $timezone);
+        self::assertSame($now->format(AbsoluteDate::DEFAULT_DATE_FORMAT), $date->format());
+    }
+
+    public function testSerialization(): void
+    {
+        $date = new AbsoluteDate('2022-01-01');
+
+        self::assertSame('2022-01-01', unserialize(serialize($date))->format());
+    }
 }
