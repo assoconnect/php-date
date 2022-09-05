@@ -34,6 +34,23 @@ class AbsoluteDate
         $this->datetime = $datetime;
     }
 
+    public function __serialize()
+    {
+        return [
+            'date' => $this->format()
+        ];
+    }
+
+    public function __unserialize($data)
+    {
+        $datetime = \DateTimeImmutable::createFromFormat(
+            self::DEFAULT_DATE_FORMAT,
+            $data['date'],
+            new \DateTimeZone('UTC')
+        );
+        $this->datetime = $datetime;
+    }    
+    
     /**
      * Returns date formatted according to given format
      *
