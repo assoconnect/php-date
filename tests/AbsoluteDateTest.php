@@ -143,4 +143,11 @@ class AbsoluteDateTest extends TestCase
         self::assertTrue($date->equals(new AbsoluteDate('2022-01-01')));
         self::assertFalse($date->equals(new AbsoluteDate('2022-01-02')));
     }
+    
+    
+    public function testSerialization(): void
+    {
+        $date = new AbsoluteDate('2022-01-01');
+        self::assertSame('2022-01-01', unserialize(serialize($date))->format());
+    }
 }
