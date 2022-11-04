@@ -56,8 +56,12 @@ class AbsoluteDate implements \Serializable
 
     /**
      * Modify the internal datetime
-     * Supported modify strings :
+     *
+     * This method only supports year, month, and day modifiers
      * @link https://www.php.net/manual/fr/datetime.formats.php
+     *
+     * @see TimeTraveler for coherent modifications month-over-month & year-over-year
+     *
      * @return AbsoluteDate
      */
     public function modify(string $modifier): self
@@ -76,7 +80,7 @@ class AbsoluteDate implements \Serializable
             'ago',
             'this',
             'of',
-            'previous'
+            'previous',
         ];
         preg_match_all('/([a-z]+)/', $modifier, $matches);
         $invalidPatterns = array_diff($matches[0], $validPatterns);
