@@ -157,7 +157,26 @@ class AbsoluteDateTest extends TestCase
     public function testSerialization(): void
     {
         $date = new AbsoluteDate('2022-01-01');
+        $serialized = serialize($date);
+        self::assertSame('O:32:"AssoConnect\PHPDate\AbsoluteDate":1:{s:4:"date";s:10:"2022-01-01";}', $serialized);
+        self::assertSame('2022-01-01', unserialize($serialized)->format());
+    }
 
-        self::assertSame('2022-01-01', unserialize(serialize($date))->format());
+    /** @dataProvider providerSerializedData */
+    public function testUnserialization(string $serialized): void
+    {
+        self::assertSame('2022-01-01', unserialize($serialized)->format());
+    }
+
+    /** @return array<string>[] */
+    public function providerSerializedData(): iterable
+    {
+        yield 'old format' => ['O:32:"AssoConnect\PHPDate\AbsoluteDate":1:{s:4:"date";s:18:"s:10:"2022-01-01";";}'];
+        yield 'another old format' => [
+            'O:32:"AssoConnect\PHPDate\AbsoluteDate":1:{s:42:" AssoConnect\PHPDate\AbsoluteDate datetime";O:17:"'
+            . 'DateTimeImmutable":3:{s:4:"date";s:26:"2022-01-01 00:00:00.000000";s:13:"timezone_type";i:3;s:8:"'
+            . 'timezone";s:3:"UTC";}}'
+        ];
+        yield 'new format' => ['O:32:"AssoConnect\PHPDate\AbsoluteDate":1:{s:4:"date";s:10:"2022-01-01";}'];
     }
 }
