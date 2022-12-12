@@ -6,7 +6,7 @@ namespace AssoConnect\PHPDate;
 
 use AssoConnect\PHPDate\Exception\ParsingException;
 
-class AbsoluteDate implements \Serializable
+class AbsoluteDate
 {
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
@@ -22,25 +22,6 @@ class AbsoluteDate implements \Serializable
     public function __construct(string $date, string $format = self::DEFAULT_DATE_FORMAT)
     {
         $this->initDatetime($date, $format);
-    }
-
-    /**
-     * @return string[]
-     * @throws \Exception
-     */
-    public function __serialize(): array
-    {
-        return [
-            'date' => $this->serialize(),
-        ];
-    }
-
-    /**
-     * @param string[] $data
-     */
-    public function __unserialize(array $data): void
-    {
-        $this->unserialize($data['date']);
     }
 
     /**
@@ -178,16 +159,35 @@ class AbsoluteDate implements \Serializable
         $this->datetime = $datetime;
     }
 
-    public function serialize(): string
+    /**
+     * @return string[]
+     */
+    public function __serialize(): array
     {
-        return serialize($this->format());
+        return [
+            'date' => $this->format(),
+        ];
     }
 
     /**
-     * @param string $data
+     * @param string[] $data
      */
-    public function unserialize($data): void
+    public function __unserialize(array $data): void
     {
-        $this->initDatetime(unserialize($data), self::DEFAULT_DATE_FORMAT);
+        if (array_key_exists('date', $data)) {
+            if (1 === preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $data['date'])) {
+                $this->initDatetime($data['date'], self::DEFAULT_DATE_FORMAT);
+                return;
+            }
+            // Temporary for historic data
+            $this->initDatetime(unserialize($data['date']), self::DEFAULT_DATE_FORMAT);
+            return;
+        }
+
+        // Temporary for historic data
+        // The key looks like " AssoConnect\PHPDate\AbsoluteDate datetime" where both spaces are like \0
+        // so using array_values makes the value much easier to access
+        // @phpstan-ignore-next-line
+        $this->initDatetime(array_values($data)[0]->format(self::DEFAULT_DATE_FORMAT), self::DEFAULT_DATE_FORMAT);
     }
 }
