@@ -136,14 +136,6 @@ class AbsoluteDateTest extends TestCase
         self::assertEquals($date2, $date->endsAt(new \DateTimeZone('America/Los_Angeles')));
     }
 
-    public function testEquals(): void
-    {
-        $date = new AbsoluteDate('2022-01-01');
-
-        self::assertTrue($date->equals(new AbsoluteDate('2022-01-01')));
-        self::assertFalse($date->equals(new AbsoluteDate('2022-01-02')));
-    }
-
     /**
      * @throws \Exception
      */
@@ -178,5 +170,36 @@ class AbsoluteDateTest extends TestCase
             . 'timezone";s:3:"UTC";}}'
         ];
         yield 'new format' => ['O:32:"AssoConnect\PHPDate\AbsoluteDate":1:{s:4:"date";s:10:"2022-01-01";}'];
+    }
+
+    public function testComparison(): void
+    {
+        $dateBefore = new AbsoluteDate('2023-01-01');
+        $dateAfter = new AbsoluteDate('2024-01-01');
+
+        self::assertTrue($dateBefore->equals($dateBefore));
+        self::assertFalse($dateBefore->equals($dateAfter));
+        self::assertTrue($dateBefore->equalsTo($dateBefore));
+        self::assertFalse($dateBefore->equalsTo($dateAfter));
+
+        self::assertTrue($dateBefore->isBefore($dateAfter));
+        self::assertFalse($dateBefore->isBefore($dateBefore));
+        self::assertFalse($dateAfter->isBefore($dateBefore));
+
+        self::assertTrue($dateBefore->isBeforeOrEqualTo($dateAfter));
+        self::assertTrue($dateBefore->isBeforeOrEqualTo($dateBefore));
+        self::assertFalse($dateAfter->isBeforeOrEqualTo($dateBefore));
+
+        self::assertSame(-1, $dateBefore->compare($dateAfter));
+        self::assertSame(0, $dateBefore->compare($dateBefore));
+        self::assertSame(1, $dateAfter->compare($dateBefore));
+
+        self::assertTrue($dateAfter->isAfter($dateBefore));
+        self::assertFalse($dateAfter->isAfter($dateAfter));
+        self::assertFalse($dateBefore->isAfter($dateAfter));
+
+        self::assertTrue($dateAfter->isAfterOrEqualTo($dateBefore));
+        self::assertTrue($dateAfter->isAfterOrEqualTo($dateAfter));
+        self::assertFalse($dateBefore->isAfterOrEqualTo($dateAfter));
     }
 }

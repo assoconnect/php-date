@@ -99,9 +99,58 @@ class AbsoluteDate
     /**
      * Checks whether the value represented by this object equals to the other.
      */
-    public function equals(self $other): bool
+    public function equalsTo(self $other): bool
     {
         return $this->__toString() === $other->__toString();
+    }
+
+    /**
+     * @deprecated use equalsTo
+     */
+    public function equals(self $other): bool
+    {
+        return $this->equalsTo($other);
+    }
+
+    /**
+     * Compare this date with another date
+     * @return int [-1,0,1] If this date is before, on, or after the given date.
+     */
+    public function compare(self $other): int
+    {
+        return $this->__toString() <=> $other->__toString();
+    }
+
+    /**
+     * Returns whether this date is before another.
+     */
+    public function isBefore(self $other): bool
+    {
+        return $this->__toString() < $other->__toString();
+    }
+
+    /**
+     * Returns whether this date is before or equal to another.
+     */
+    public function isBeforeOrEqualTo(self $other): bool
+    {
+        return $this->__toString() <= $other->__toString();
+    }
+
+    /**
+     * Returns whether this instant is after another.
+     */
+    public function isAfter(self $other): bool
+    {
+        return $this->__toString() > $other->__toString();
+    }
+
+    /**
+     * Returns whether this instant is after or equal to another.
+     */
+    public function isAfterOrEqualTo(self $other): bool
+    {
+        return $this->__toString() >= $other->__toString();
     }
 
     /**
