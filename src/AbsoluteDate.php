@@ -153,6 +153,16 @@ class AbsoluteDate
         return $this->__toString() >= $other->__toString();
     }
 
+    public function isBetween(self $other1, self $other2): bool
+    {
+        return $other1->__toString() < $this->__toString() && $this->__toString() < $other2->__toString();
+    }
+
+    public function isBetweenOrEqualTo(self $other1, self $other2): bool
+    {
+        return $other1->__toString() <= $this->__toString() && $this->__toString() <= $other2->__toString();
+    }
+
     /**
      * Returns date formatted according to the default date format (Y-m-d)
      */
