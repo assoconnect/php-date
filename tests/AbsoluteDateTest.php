@@ -201,5 +201,17 @@ class AbsoluteDateTest extends TestCase
         self::assertTrue($dateAfter->isAfterOrEqualTo($dateBefore));
         self::assertTrue($dateAfter->isAfterOrEqualTo($dateAfter));
         self::assertFalse($dateBefore->isAfterOrEqualTo($dateAfter));
+
+        self::assertTrue((new AbsoluteDate('2023-06-01'))->isBetween($dateBefore, $dateAfter));
+        self::assertFalse((new AbsoluteDate('2020-01-01'))->isBetween($dateBefore, $dateAfter));
+        self::assertFalse((new AbsoluteDate('2025-01-01'))->isBetween($dateBefore, $dateAfter));
+        self::assertFalse($dateBefore->isBetween($dateBefore, $dateAfter));
+        self::assertFalse($dateAfter->isBetween($dateBefore, $dateAfter));
+
+        self::assertTrue((new AbsoluteDate('2023-06-01'))->isBetweenOrEqualTo($dateBefore, $dateAfter));
+        self::assertFalse((new AbsoluteDate('2020-01-01'))->isBetweenOrEqualTo($dateBefore, $dateAfter));
+        self::assertFalse((new AbsoluteDate('2025-01-01'))->isBetweenOrEqualTo($dateBefore, $dateAfter));
+        self::assertTrue($dateBefore->isBetweenOrEqualTo($dateBefore, $dateAfter));
+        self::assertTrue($dateAfter->isBetweenOrEqualTo($dateBefore, $dateAfter));
     }
 }
