@@ -14,7 +14,7 @@ class AbsoluteDate
 
     /**
      * AbsoluteDate constructor from a date as string
-     * Use createInTimezone method if you have a DateTime object or your format includes the hour part
+     * Use createInTimezone method if you have a DateTime instance or your format includes the hour part
      *
      * @param string $date Date as string
      * @param string $format Format to parse the provided date
@@ -97,7 +97,7 @@ class AbsoluteDate
     }
 
     /**
-     * Checks whether the value represented by this object equals to the other.
+     * Checks whether the date represented by this instance equals to the other.
      */
     public function equalsTo(self $other): bool
     {
@@ -138,7 +138,7 @@ class AbsoluteDate
     }
 
     /**
-     * Returns whether this instant is after another.
+     * Returns whether this date is after another.
      */
     public function isAfter(self $other): bool
     {
@@ -146,7 +146,7 @@ class AbsoluteDate
     }
 
     /**
-     * Returns whether this instant is after or equal to another.
+     * Returns whether this date is after or equal to another.
      */
     public function isAfterOrEqualTo(self $other): bool
     {
@@ -172,7 +172,7 @@ class AbsoluteDate
     }
 
     /**
-     * Returns an AbsoluteDate object
+     * Returns an AbsoluteDate instance
      *
      * @param \DateTimeZone $timezone Timezone to use to get the right date
      * @param \DateTimeInterface|null $datetime Point in time to find the date from
@@ -187,7 +187,7 @@ class AbsoluteDate
     }
 
     /**
-     * Returns an AbsoluteDate object from a relative format in a given timezone
+     * Returns an AbsoluteDate instance from a relative format in a given timezone
      *
      * @param string $relative Relative format to use
      * @param ?\DateTimeZone $timezone Timezone to use to get the right date
