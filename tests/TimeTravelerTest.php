@@ -58,9 +58,9 @@ class TimeTravelerTest extends TestCase
     }
 
     /** @dataProvider provideMonthsWithReferenceOverYear */
-    public function testAddMonthWithReferenceWorksYearOverYear(string $reference, string $expected): void
+    public function testAddMonthWithReferenceWorksYearOverYear(string $referenceAsString, string $expected): void
     {
-        $reference = new AbsoluteDate($reference);
+        $reference = new AbsoluteDate($referenceAsString);
 
         for ($i = 0; $i < 12; $i++) {
             $actual = $this->timeTraveler->addMonthWithReference($reference, $actual ?? $reference);

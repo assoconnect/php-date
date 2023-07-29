@@ -5,4 +5,3 @@ parameters:
 
 includes:
     - vendor/assoconnect/php-quality-config/phpstan.extension.neon
-    - vendor/assoconnect/php-quality-config/phpstan.rules.neon
