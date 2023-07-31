@@ -31,7 +31,8 @@ class TimeTravelerTest extends TestCase
         yield ['2020-01-29', '2020-02-29'];
         yield ['2020-01-30', '2020-02-29'];
         yield ['2020-01-31', '2020-02-29'];
-        yield ['2020-02-29', '2020-03-29'];
+        yield ['2020-02-29', '2020-03-31'];
+        yield ['2020-06-30', '2020-07-31'];
     }
 
     /** @dataProvider provideMonthsWithReference */
@@ -55,6 +56,9 @@ class TimeTravelerTest extends TestCase
         yield ['2020-01-30', '2020-02-29', '2020-03-30'];
         yield ['2020-01-31', '2020-02-29', '2020-03-31'];
         yield ['2020-01-31', '2020-03-31', '2020-04-30'];
+        yield ['2020-06-30', '2020-06-30', '2020-07-31'];
+        yield ['2020-06-30', '2020-07-31', '2020-08-31'];
+        yield ['2020-06-30', '2020-08-31', '2020-09-30'];
     }
 
     /** @dataProvider provideMonthsWithReferenceOverYear */
@@ -78,6 +82,7 @@ class TimeTravelerTest extends TestCase
         yield ['2020-01-29', '2021-01-29'];
         yield ['2020-01-30', '2021-01-30'];
         yield ['2020-01-31', '2021-01-31'];
+        yield ['2020-06-30', '2021-06-30'];
     }
 
     /** @dataProvider provideYears */
@@ -92,5 +97,6 @@ class TimeTravelerTest extends TestCase
         yield ['2020-01-01', '2021-01-01'];
         yield ['2020-01-31', '2021-01-31'];
         yield ['2020-02-29', '2021-02-28'];
+        yield ['2020-06-30', '2021-06-30'];
     }
 }

@@ -14,6 +14,9 @@ class TimeTraveler
      *
      * (new AbsoluteDate(2020-01-31))->modify('+1 month') = 2020-02-31 => 2020-03-02 so more than a month
      * addMonth(new AbsoluteDate(2020-01-31)) = 2020-02-29
+     *
+     * (new AbsoluteDate(2020-06-30))->modify('+1 month') = 2020-07-30 so less than a month
+     * addMonth(new AbsoluteDate(2020-06-30)) = 2020-07-31
      */
     public function addMonth(AbsoluteDate $from): AbsoluteDate
     {
@@ -22,7 +25,8 @@ class TimeTraveler
         while ($expectedMonth !== intval($next->format('n'))) {
             $next = $next->modify('-1 day');
         }
-        return $next;
+
+        return $this->modifyForTheLastDayOfThisMonthIfNeedBe($next, $from);
     }
 
     /**
@@ -51,7 +55,10 @@ class TimeTraveler
             intval($next->modify('last day of this month')->format('j'))
         );
         $dayString = str_pad(strval($day), 2, '0', STR_PAD_LEFT);
-        return new AbsoluteDate($next->format('Y-m') . '-' . $dayString);
+        return $this->modifyForTheLastDayOfThisMonthIfNeedBe(
+            new AbsoluteDate($next->format('Y-m') . '-' . $dayString),
+            $reference
+        );
     }
 
     /**
@@ -67,5 +74,14 @@ class TimeTraveler
             $next = $next->modify('-1 day');
         }
         return $next;
+    }
+
+    private function modifyForTheLastDayOfThisMonthIfNeedBe(AbsoluteDate $result, AbsoluteDate $reference): AbsoluteDate
+    {
+        $pattern = 'last day of this month';
+        if ($reference->equalsTo($reference->modify($pattern))) {
+            return $result->modify($pattern);
+        }
+        return $result;
     }
 }
