@@ -20,13 +20,30 @@ class TimeTraveler
      */
     public function addMonth(AbsoluteDate $from): AbsoluteDate
     {
-        $expectedMonth = (intval($from->format('n')) % 12) + 1;
+        $currentMonth = intval($from->format('n'));
+        $expectedMonth = $currentMonth + 1 === 13 ? 1 : $currentMonth + 1;
+
         $next = $from->modify('+1 month');
+
         while ($expectedMonth !== intval($next->format('n'))) {
             $next = $next->modify('-1 day');
         }
 
         return $this->modifyForTheLastDayOfThisMonthIfNeedBe($next, $from);
+    }
+
+    public function removeMonth(AbsoluteDate $from): AbsoluteDate
+    {
+        $currentMonth = intval($from->format('n'));
+        $expectedMonth = $currentMonth - 1 === 0 ? 12 : $currentMonth - 1;
+
+        $previous = $from->modify('-1 month');
+
+        while ($expectedMonth !== intval($previous->format('n'))) {
+            $previous = $previous->modify('-1 day');
+        }
+
+        return $previous;
     }
 
     /**
