@@ -54,6 +54,10 @@ class TimeTravelerTest extends TestCase
                 '2020-02-29' => '2020-01-29',
                 '2020-06-30' => '2020-05-30',
                 '2023-10-31' => '2023-09-30',
+                '2023-08-31' => '2023-07-31',
+                '2023-09-30' => '2023-08-30',
+                '2023-03-31' => '2023-02-28',
+                '2024-03-31' => '2024-02-29',
             ] as $currentMonth => $expectedPreviousMonth
         ) {
             yield sprintf('%s: previous month will %s', $currentMonth, $expectedPreviousMonth) => [
