@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AssoConnect\PHPDate;
 
 /**
- * This class addresses corner-case of the modify('+1 month') method
+ * This class addresses corner-case of the ->modify('+/- 1 month') method
  */
 class TimeTraveler
 {
