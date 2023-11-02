@@ -43,7 +43,7 @@ class TimeTraveler
             $previous = $previous->modify('-1 day');
         }
 
-        return $previous;
+        return $this->modifyForTheLastDayOfThisMonthIfNeedBe($previous, $from);
     }
 
     /**
