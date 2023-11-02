@@ -35,6 +35,38 @@ class TimeTravelerTest extends TestCase
         yield ['2020-06-30', '2020-07-31'];
     }
 
+    /** @dataProvider provideRemoveMonths */
+    public function testRemoveMonth(string $from, string $expected): void
+    {
+        self::assertSame($expected, $this->timeTraveler->removeMonth(new AbsoluteDate($from))->__toString());
+    }
+
+    /** @return iterable<string, array{string, string}> */
+    public function provideRemoveMonths(): iterable
+    {
+        foreach (
+            [
+                '2020-01-01' => '2019-12-01',
+                '2020-01-28' => '2019-12-28',
+                '2020-01-29' => '2019-12-29',
+                '2020-01-30' => '2019-12-30',
+                '2020-01-31' => '2019-12-31',
+                '2020-02-29' => '2020-01-31',
+                '2020-06-30' => '2020-05-31',
+                '2023-10-31' => '2023-09-30',
+                '2023-08-31' => '2023-07-31',
+                '2023-09-30' => '2023-08-31',
+                '2023-03-31' => '2023-02-28',
+                '2024-03-31' => '2024-02-29',
+            ] as $currentMonth => $expectedPreviousMonth
+        ) {
+            yield sprintf('%s: previous month will %s', $currentMonth, $expectedPreviousMonth) => [
+                $currentMonth,
+                $expectedPreviousMonth,
+            ];
+        }
+    }
+
     /** @dataProvider provideMonthsWithReference */
     public function testAddMonthWithReference(string $reference, string $from, string $expected): void
     {
