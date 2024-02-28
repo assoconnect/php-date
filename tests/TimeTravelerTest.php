@@ -17,14 +17,14 @@ class TimeTravelerTest extends TestCase
         $this->timeTraveler = new TimeTraveler();
     }
 
-    /** @dataProvider provideMonths */
+    /** @dataProvider provideAddMonths */
     public function testAddMonth(string $from, string $expected): void
     {
         self::assertSame($expected, $this->timeTraveler->addMonth(new AbsoluteDate($from))->__toString());
     }
 
     /** @return array{string, string}[] */
-    public function provideMonths(): iterable
+    public function provideAddMonths(): iterable
     {
         yield ['2020-01-01', '2020-02-01'];
         yield ['2020-01-28', '2020-02-28'];
