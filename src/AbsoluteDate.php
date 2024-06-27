@@ -6,7 +6,7 @@ namespace AssoConnect\PHPDate;
 
 use AssoConnect\PHPDate\Exception\ParsingException;
 
-class AbsoluteDate
+class AbsoluteDate implements \Stringable
 {
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
