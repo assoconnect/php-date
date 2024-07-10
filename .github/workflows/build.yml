@@ -9,8 +9,10 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        php-versions: ['7.4', '8.0', '8.1']
+        php-versions: ['8.2', '8.3']
+        dependency-versions: ['lowest', 'highest']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,8 +24,10 @@ jobs:
           php-version: ${{ matrix.php-versions }}
       
       - run: composer validate --strict
-      
-      - run: composer install --prefer-dist --no-progress --no-suggest
+
+      - uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependency-versions }}
       
       - run: vendor/bin/phpcs
         if: ${{ failure() ||  success() }}

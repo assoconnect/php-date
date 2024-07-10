@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AssoConnect\PHPDate;
 
 use AssoConnect\PHPDate\Exception\UnknownPatternException;
+use AssoConnect\PHPDate\Exception\UnsupportedLocalException;
 use IntlDateFormatter;
 
 class LocalizedStringParser
@@ -53,10 +54,16 @@ class LocalizedStringParser
 
     public function getPatternFromLocale(string $locale): string
     {
-        return (new IntlDateFormatter(
+        $pattern = (new IntlDateFormatter(
             $locale,
             IntlDateFormatter::SHORT,
             IntlDateFormatter::NONE,
         ))->getPattern();
+
+        if (false === $pattern) {
+            throw new UnsupportedLocalException($locale);
+        }
+
+        return $pattern;
     }
 }
