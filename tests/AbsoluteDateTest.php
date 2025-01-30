@@ -85,7 +85,6 @@ class AbsoluteDateTest extends TestCase
             '2019-12-27 23:00:00',
             new \DateTimeZone('UTC')
         );
-        self::assertNotFalse($datetime);
 
         $date = AbsoluteDate::createInTimezone(new \DateTimeZone('UTC'), $datetime);
         self::assertSame('2019-12-27', $date->format());

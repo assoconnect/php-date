@@ -215,8 +215,8 @@ class AbsoluteDate implements \Stringable
 
         try {
             $this->datetime = DatePoint::createFromFormat($format, $date, $timezone);
-        } catch (\DateMalformedStringException) {
-            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
+        } catch (\DateMalformedStringException $e) {
+            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format), previous: $e);
         }
     }
 
