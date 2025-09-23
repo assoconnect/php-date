@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace AssoConnect\PHPDate;
 
-use AssoConnect\PHPDate\Exception\ParsingException;
+use Symfony\Component\Clock\DatePoint;
 
 class AbsoluteDate implements \Stringable
 {
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
-    private \DateTimeImmutable $datetime;
+    private DatePoint $datetime;
 
     /**
      * AbsoluteDate constructor from a date as string
@@ -93,7 +93,7 @@ class AbsoluteDate implements \Stringable
 
     private function getDateTimeFromFormatAndTimezone(string $format, \DateTimeZone $timezone): \DateTimeImmutable
     {
-        return new \DateTimeImmutable($this->format($format), $timezone);
+        return new DatePoint($this->format($format), $timezone);
     }
 
     /**
@@ -180,8 +180,8 @@ class AbsoluteDate implements \Stringable
      */
     public static function createInTimezone(\DateTimeZone $timezone, \DateTimeInterface $datetime = null): self
     {
-        $datetime = new \DateTime('@' . (null === $datetime ? time() : $datetime->getTimestamp()));
-        $datetime->setTimezone($timezone);
+        $datetime = new DatePoint('@' . (null === $datetime ? time() : $datetime->getTimestamp()));
+        $datetime = $datetime->setTimezone($timezone);
 
         return new self($datetime->format(self::DEFAULT_DATE_FORMAT));
     }
@@ -198,7 +198,7 @@ class AbsoluteDate implements \Stringable
             $timezone = new \DateTimeZone('UTC');
         }
 
-        $datetime = new \DateTime($relative, $timezone);
+        $datetime = new DatePoint($relative, $timezone);
 
         return self::createInTimezone($timezone, $datetime);
     }
@@ -209,11 +209,7 @@ class AbsoluteDate implements \Stringable
         $format .= 'H:i:s';
         $date .= '00:00:00';
 
-        $datetime = \DateTimeImmutable::createFromFormat($format, $date, $timezone);
-
-        if (false === $datetime) {
-            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
-        }
+        $datetime = DatePoint::createFromFormat($format, $date, $timezone);
 
         $this->datetime = $datetime;
     }
