@@ -22,7 +22,8 @@
         }
     },
     "require-dev": {
-        "assoconnect/php-quality-config": "^1.12"
+        "assoconnect/php-quality-config": "^1.12",
+        "rector/rector": "^1.2"
     },
     "require": {
         "php": "^8.2",
