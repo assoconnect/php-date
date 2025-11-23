@@ -7,6 +7,7 @@ namespace AssoConnect\PHPDate\Tests;
 use AssoConnect\PHPDate\AbsoluteDate;
 use AssoConnect\PHPDate\Exception\ParsingException;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Clock\DatePoint;
 
 class AbsoluteDateTest extends TestCase
 {
@@ -79,12 +80,11 @@ class AbsoluteDateTest extends TestCase
         $date = new AbsoluteDate('2020-01-02');
         self::assertSame('2020-01-02', $date->format());
 
-        $datetime = \DateTime::createFromFormat(
+        $datetime = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 23:00:00',
             new \DateTimeZone('UTC')
         );
-        self::assertNotFalse($datetime);
 
         $date = AbsoluteDate::createInTimezone(new \DateTimeZone('UTC'), $datetime);
         self::assertSame('2019-12-27', $date->format());
@@ -98,13 +98,13 @@ class AbsoluteDateTest extends TestCase
 
     public function testStartsAt(): void
     {
-        $date1 = \DateTime::createFromFormat(
+        $date1 = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 00:00:00',
             new \DateTimeZone('Europe/Paris')
         );
 
-        $date2 = \DateTime::createFromFormat(
+        $date2 = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 00:00:00',
             new \DateTimeZone('America/Los_Angeles')
@@ -118,13 +118,13 @@ class AbsoluteDateTest extends TestCase
 
     public function testEndsAt(): void
     {
-        $date1 = \DateTime::createFromFormat(
+        $date1 = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 23:59:59',
             new \DateTimeZone('Europe/Paris')
         );
 
-        $date2 = \DateTime::createFromFormat(
+        $date2 = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 23:59:59',
             new \DateTimeZone('America/Los_Angeles')
@@ -142,7 +142,7 @@ class AbsoluteDateTest extends TestCase
     public function testCreateRelative(): void
     {
         $date = AbsoluteDate::createRelative('yesterday', $timezone = new \DateTimeZone('America/Los_Angeles'));
-        $now = new \DateTimeImmutable('yesterday', $timezone);
+        $now = new DatePoint('yesterday', $timezone);
         self::assertSame($now->format(AbsoluteDate::DEFAULT_DATE_FORMAT), $date->format());
     }
 
