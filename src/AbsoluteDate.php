@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace AssoConnect\PHPDate;
 
 use AssoConnect\PHPDate\Exception\ParsingException;
+use DateTimeImmutable;
+use DateTimeZone;
 
 class AbsoluteDate implements \Stringable
 {
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
-    private \DateTimeImmutable $datetime;
+    private DateTimeImmutable $datetime;
 
     /**
      * AbsoluteDate constructor from a date as string
@@ -78,7 +80,7 @@ class AbsoluteDate implements \Stringable
     /**
      * Return the DateTime for a given DateTimeZone
      */
-    public function startsAt(\DateTimeZone $timezone): \DateTimeImmutable
+    public function startsAt(DateTimeZone $timezone): DateTimeImmutable
     {
         return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT, $timezone);
     }
@@ -86,14 +88,14 @@ class AbsoluteDate implements \Stringable
     /**
      * Return the DateTime at the end of the day for a given DateTimeZone
      */
-    public function endsAt(\DateTimeZone $timezone): \DateTimeImmutable
+    public function endsAt(DateTimeZone $timezone): DateTimeImmutable
     {
         return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT . ' 23:59:59', $timezone);
     }
 
-    private function getDateTimeFromFormatAndTimezone(string $format, \DateTimeZone $timezone): \DateTimeImmutable
+    private function getDateTimeFromFormatAndTimezone(string $format, DateTimeZone $timezone): DateTimeImmutable
     {
-        return new \DateTimeImmutable($this->format($format), $timezone);
+        return new DateTimeImmutable($this->format($format), $timezone);
     }
 
     /**
@@ -174,42 +176,43 @@ class AbsoluteDate implements \Stringable
     /**
      * Returns an AbsoluteDate instance
      *
-     * @param \DateTimeZone $timezone Timezone to use to get the right date
+     * @param DateTimeZone $timezone Timezone to use to get the right date
      * @param \DateTimeInterface|null $datetime Point in time to find the date from
      * @throws \Exception
      */
-    public static function createInTimezone(\DateTimeZone $timezone, \DateTimeInterface $datetime = null): self
+    public static function createInTimezone(DateTimeZone $timezone, \DateTimeInterface $datetime = null): self
     {
-        $datetime = new \DateTime('@' . (null === $datetime ? time() : $datetime->getTimestamp()));
-        $datetime->setTimezone($timezone);
-
-        return new self($datetime->format(self::DEFAULT_DATE_FORMAT));
+        return new self(
+            (new DateTimeImmutable('@' . (null === $datetime ? time() : $datetime->getTimestamp())))
+            ->setTimezone($timezone)
+            ->format(self::DEFAULT_DATE_FORMAT)
+        );
     }
 
     /**
      * Returns an AbsoluteDate instance from a relative format in a given timezone
      *
      * @param string $relative Relative format to use
-     * @param ?\DateTimeZone $timezone Timezone to use to get the right date
+     * @param ?DateTimeZone $timezone Timezone to use to get the right date
      */
-    public static function createRelative(string $relative = 'now', \DateTimeZone $timezone = null): self
+    public static function createRelative(string $relative = 'now', DateTimeZone $timezone = null): self
     {
         if (null === $timezone) {
-            $timezone = new \DateTimeZone('UTC');
+            $timezone = new DateTimeZone('UTC');
         }
 
-        $datetime = new \DateTime($relative, $timezone);
+        $datetime = new DateTimeImmutable($relative, $timezone);
 
         return self::createInTimezone($timezone, $datetime);
     }
 
     private function initDatetime(string $date, string $format): void
     {
-        $timezone = new \DateTimeZone('UTC');
+        $timezone = new DateTimeZone('UTC');
         $format .= 'H:i:s';
         $date .= '00:00:00';
 
-        $datetime = \DateTimeImmutable::createFromFormat($format, $date, $timezone);
+        $datetime = DateTimeImmutable::createFromFormat($format, $date, $timezone);
 
         if (false === $datetime) {
             throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
