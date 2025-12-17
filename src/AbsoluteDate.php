@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace AssoConnect\PHPDate;
 
 use AssoConnect\PHPDate\Exception\ParsingException;
-use DateTimeImmutable;
 use DateTimeZone;
+use Symfony\Component\Clock\Clock;
+use Symfony\Component\Clock\DatePoint;
 
 class AbsoluteDate implements \Stringable
 {
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
-    private DateTimeImmutable $datetime;
+    private DatePoint $datetime;
 
     /**
      * AbsoluteDate constructor from a date as string
@@ -80,22 +81,22 @@ class AbsoluteDate implements \Stringable
     /**
      * Return the DateTime for a given DateTimeZone
      */
-    public function startsAt(DateTimeZone $timezone): DateTimeImmutable
+    public function startsAt(DateTimeZone $timezone): DatePoint
     {
-        return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT, $timezone);
+        return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT . ' 00:00:00', $timezone);
     }
 
     /**
      * Return the DateTime at the end of the day for a given DateTimeZone
      */
-    public function endsAt(DateTimeZone $timezone): DateTimeImmutable
+    public function endsAt(DateTimeZone $timezone): DatePoint
     {
         return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT . ' 23:59:59', $timezone);
     }
 
-    private function getDateTimeFromFormatAndTimezone(string $format, DateTimeZone $timezone): DateTimeImmutable
+    private function getDateTimeFromFormatAndTimezone(string $format, DateTimeZone $timezone): DatePoint
     {
-        return new DateTimeImmutable($this->format($format), $timezone);
+        return new DatePoint($this->format($format), $timezone);
     }
 
     /**
@@ -170,7 +171,7 @@ class AbsoluteDate implements \Stringable
      */
     public function __toString(): string
     {
-        return $this->format(self::DEFAULT_DATE_FORMAT);
+        return $this->format();
     }
 
     /**
@@ -182,11 +183,22 @@ class AbsoluteDate implements \Stringable
      */
     public static function createInTimezone(DateTimeZone $timezone, \DateTimeInterface $datetime = null): self
     {
-        return new self(
-            (new DateTimeImmutable('@' . (null === $datetime ? time() : $datetime->getTimestamp())))
-            ->setTimezone($timezone)
-            ->format(self::DEFAULT_DATE_FORMAT)
+        $pointInTime = new DatePoint(
+            '@' . (null === $datetime ? Clock::get()->now()->getTimestamp() : $datetime->getTimestamp())
         );
+
+        $pointInTime = $pointInTime->setTimezone($timezone);
+
+        $localMidnight = DatePoint::createFromFormat(
+            'Y-m-d H:i:s',
+            $pointInTime->format('Y-m-d 00:00:00'),
+            $timezone
+        );
+
+        $absolute = new self($localMidnight->format(self::DEFAULT_DATE_FORMAT));
+        $absolute->datetime = $localMidnight;
+
+        return $absolute;
     }
 
     /**
@@ -201,7 +213,7 @@ class AbsoluteDate implements \Stringable
             $timezone = new DateTimeZone('UTC');
         }
 
-        $datetime = new DateTimeImmutable($relative, $timezone);
+        $datetime = new DatePoint($relative, $timezone);
 
         return self::createInTimezone($timezone, $datetime);
     }
@@ -212,13 +224,11 @@ class AbsoluteDate implements \Stringable
         $format .= 'H:i:s';
         $date .= '00:00:00';
 
-        $datetime = DateTimeImmutable::createFromFormat($format, $date, $timezone);
-
-        if (false === $datetime) {
-            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format));
+        try {
+            $this->datetime = DatePoint::createFromFormat($format, $date, $timezone);
+        } catch (\DateMalformedStringException $e) {
+            throw new ParsingException(sprintf('Cannot parse %s with format %s', $date, $format), previous: $e);
         }
-
-        $this->datetime = $datetime;
     }
 
     /**

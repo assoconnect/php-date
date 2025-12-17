@@ -54,11 +54,13 @@ class LocalizedStringParser
 
     public function getPatternFromLocale(string $locale): string
     {
-        $pattern = (new IntlDateFormatter(
+        $formatter = new IntlDateFormatter(
             $locale,
             IntlDateFormatter::SHORT,
             IntlDateFormatter::NONE,
-        ))->getPattern();
+        );
+
+        $pattern = $formatter->getPattern();
 
         if (false === $pattern) {
             throw new UnsupportedLocalException($locale);

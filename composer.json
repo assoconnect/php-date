@@ -25,9 +25,10 @@
         "assoconnect/php-quality-config": "^1.16"
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-intl": "*",
-        "thecodingmachine/safe": "^3.0"
+        "thecodingmachine/safe": "^3.0",
+        "symfony/clock": "^6.4|^7.0"
     },
     "config": {
         "allow-plugins": {
