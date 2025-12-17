@@ -183,12 +183,22 @@ class AbsoluteDate implements \Stringable
      */
     public static function createInTimezone(DateTimeZone $timezone, \DateTimeInterface $datetime = null): self
     {
-        $datetime = new DatePoint(
+        $pointInTime = new DatePoint(
             '@' . (null === $datetime ? Clock::get()->now()->getTimestamp() : $datetime->getTimestamp())
         );
-        $datetime->setTimezone($timezone);
 
-        return new self($datetime->format(self::DEFAULT_DATE_FORMAT));
+        $pointInTime = $pointInTime->setTimezone($timezone);
+
+        $localMidnight = DatePoint::createFromFormat(
+            'Y-m-d H:i:s',
+            $pointInTime->format('Y-m-d 00:00:00'),
+            $timezone
+        );
+
+        $absolute = new self($localMidnight->format(self::DEFAULT_DATE_FORMAT));
+        $absolute->datetime = $localMidnight;
+
+        return $absolute;
     }
 
     /**

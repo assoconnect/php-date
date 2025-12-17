@@ -6,6 +6,7 @@ namespace AssoConnect\PHPDate\Tests;
 
 use AssoConnect\PHPDate\AbsoluteDate;
 use AssoConnect\PHPDate\Exception\ParsingException;
+use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Clock\DatePoint;
 
@@ -83,16 +84,16 @@ class AbsoluteDateTest extends TestCase
         $datetime = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 23:00:00',
-            new \DateTimeZone('UTC')
+            new DateTimeZone('UTC')
         );
 
-        $date = AbsoluteDate::createInTimezone(new \DateTimeZone('UTC'), $datetime);
+        $date = AbsoluteDate::createInTimezone(new DateTimeZone('UTC'), $datetime);
         self::assertSame('2019-12-27', $date->format());
 
-        $date = AbsoluteDate::createInTimezone(new \DateTimeZone('Europe/Paris'), $datetime);
+        $date = AbsoluteDate::createInTimezone(new DateTimeZone('Europe/Paris'), $datetime);
         self::assertSame('2019-12-28', $date->format());
 
-        $date = AbsoluteDate::createInTimezone(new \DateTimeZone('America/Los_Angeles'), $datetime);
+        $date = AbsoluteDate::createInTimezone(new DateTimeZone('America/Los_Angeles'), $datetime);
         self::assertSame('2019-12-27', $date->format());
     }
 
@@ -101,19 +102,19 @@ class AbsoluteDateTest extends TestCase
         $date1 = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 00:00:00',
-            new \DateTimeZone('Europe/Paris')
+            new DateTimeZone('Europe/Paris')
         );
 
         $date2 = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 00:00:00',
-            new \DateTimeZone('America/Los_Angeles')
+            new DateTimeZone('America/Los_Angeles')
         );
 
         $date = new AbsoluteDate('2019-12-27');
 
-        self::assertEquals($date1, $date->startsAt(new \DateTimeZone('Europe/Paris')));
-        self::assertEquals($date2, $date->startsAt(new \DateTimeZone('America/Los_Angeles')));
+        self::assertEquals($date1, $date->startsAt(new DateTimeZone('Europe/Paris')));
+        self::assertEquals($date2, $date->startsAt(new DateTimeZone('America/Los_Angeles')));
     }
 
     public function testEndsAt(): void
@@ -121,19 +122,19 @@ class AbsoluteDateTest extends TestCase
         $date1 = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 23:59:59',
-            new \DateTimeZone('Europe/Paris')
+            new DateTimeZone('Europe/Paris')
         );
 
         $date2 = DatePoint::createFromFormat(
             'Y-m-d H:i:s',
             '2019-12-27 23:59:59',
-            new \DateTimeZone('America/Los_Angeles')
+            new DateTimeZone('America/Los_Angeles')
         );
 
         $date = new AbsoluteDate('2019-12-27');
 
-        self::assertEquals($date1, $date->endsAt(new \DateTimeZone('Europe/Paris')));
-        self::assertEquals($date2, $date->endsAt(new \DateTimeZone('America/Los_Angeles')));
+        self::assertEquals($date1, $date->endsAt(new DateTimeZone('Europe/Paris')));
+        self::assertEquals($date2, $date->endsAt(new DateTimeZone('America/Los_Angeles')));
     }
 
     /**
@@ -141,7 +142,7 @@ class AbsoluteDateTest extends TestCase
      */
     public function testCreateRelative(): void
     {
-        $date = AbsoluteDate::createRelative('yesterday', $timezone = new \DateTimeZone('America/Los_Angeles'));
+        $date = AbsoluteDate::createRelative('yesterday', $timezone = new DateTimeZone('America/Los_Angeles'));
         $now = new DatePoint('yesterday', $timezone);
         self::assertSame($now->format(AbsoluteDate::DEFAULT_DATE_FORMAT), $date->format());
     }
