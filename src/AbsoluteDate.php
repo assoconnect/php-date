@@ -83,7 +83,7 @@ class AbsoluteDate implements \Stringable
      */
     public function startsAt(DateTimeZone $timezone): DatePoint
     {
-        return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT, $timezone);
+        return $this->getDateTimeFromFormatAndTimezone(self::DEFAULT_DATE_FORMAT . ' 00:00:00', $timezone);
     }
 
     /**
