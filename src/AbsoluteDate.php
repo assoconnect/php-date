@@ -180,7 +180,7 @@ class AbsoluteDate implements \Stringable
      * @param \DateTimeInterface|null $datetime Point in time to find the date from
      * @throws \Exception
      */
-    public static function createInTimezone(DateTimeZone $timezone, \DateTimeInterface $datetime = null): self
+    public static function createInTimezone(DateTimeZone $timezone, ?\DateTimeInterface $datetime = null): self
     {
         return new self(
             (new DateTimeImmutable('@' . (null === $datetime ? time() : $datetime->getTimestamp())))
@@ -195,7 +195,7 @@ class AbsoluteDate implements \Stringable
      * @param string $relative Relative format to use
      * @param ?DateTimeZone $timezone Timezone to use to get the right date
      */
-    public static function createRelative(string $relative = 'now', DateTimeZone $timezone = null): self
+    public static function createRelative(string $relative = 'now', ?DateTimeZone $timezone = null): self
     {
         if (null === $timezone) {
             $timezone = new DateTimeZone('UTC');
