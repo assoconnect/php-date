@@ -253,4 +253,3 @@ class AbsoluteDate implements \Stringable
         $this->initDatetime(array_values($data)[0]->format(self::DEFAULT_DATE_FORMAT), self::DEFAULT_DATE_FORMAT);
     }
 }
-
