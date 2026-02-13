@@ -24,7 +24,7 @@ class TimeTravelerTest extends TestCase
     }
 
     /** @return array{string, string}[] */
-    public function provideAddMonths(): iterable
+    public static function provideAddMonths(): iterable
     {
         yield ['2020-01-01', '2020-02-01'];
         yield ['2020-01-28', '2020-02-28'];
@@ -42,7 +42,7 @@ class TimeTravelerTest extends TestCase
     }
 
     /** @return iterable<string, array{string, string}> */
-    public function provideRemoveMonths(): iterable
+    public static function provideRemoveMonths(): iterable
     {
         foreach (
             [
@@ -77,7 +77,7 @@ class TimeTravelerTest extends TestCase
     }
 
     /** @return array{string, string, string}[] */
-    public function provideMonthsWithReference(): iterable
+    public static function provideMonthsWithReference(): iterable
     {
         yield ['2020-01-01', '2020-01-01', '2020-02-01'];
         yield ['2020-01-01', '2020-02-01', '2020-03-01'];
@@ -106,7 +106,7 @@ class TimeTravelerTest extends TestCase
     }
 
     /** @return array{string, string}[] */
-    public function provideMonthsWithReferenceOverYear(): iterable
+    public static function provideMonthsWithReferenceOverYear(): iterable
     {
         yield ['2020-01-01', '2021-01-01'];
         yield ['2020-01-15', '2021-01-15'];
@@ -124,7 +124,7 @@ class TimeTravelerTest extends TestCase
     }
 
     /** @return array{string, string}[] */
-    public function provideYears(): iterable
+    public static function provideYears(): iterable
     {
         yield ['2020-01-01', '2021-01-01'];
         yield ['2020-01-31', '2021-01-31'];

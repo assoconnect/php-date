@@ -17,7 +17,7 @@ class LocalizedStringParserTest extends TestCase
     }
 
     /** @return array{string, string, string}[] */
-    public function provideStringsAndLocales(): iterable
+    public static function provideStringsAndLocales(): iterable
     {
         yield ['09/01/2023', 'en_US', '2023-09-01'];
         yield ['9/1/2023', 'en_US', '2023-09-01'];
