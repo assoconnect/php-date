@@ -63,7 +63,7 @@ class AbsoluteDateTest extends TestCase
     /**
      * @return iterable<mixed>
      */
-    public function providerModifyEnforcePattern(): iterable
+    public static function providerModifyEnforcePattern(): iterable
     {
         // Invalid pattern
         yield ['+1 second', false];
@@ -161,7 +161,7 @@ class AbsoluteDateTest extends TestCase
     }
 
     /** @return array<string>[] */
-    public function providerSerializedData(): iterable
+    public static function providerSerializedData(): iterable
     {
         yield 'old format' => ['O:32:"AssoConnect\PHPDate\AbsoluteDate":1:{s:4:"date";s:18:"s:10:"2022-01-01";";}'];
         yield 'another old format' => [
