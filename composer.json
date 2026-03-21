@@ -22,7 +22,7 @@
         }
     },
     "require-dev": {
-        "assoconnect/php-quality-config": "^2"
+        "assoconnect/php-quality-config": "^2.2"
     },
     "require": {
         "php": "^8.3",
