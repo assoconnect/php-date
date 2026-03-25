@@ -25,7 +25,7 @@
         "assoconnect/php-quality-config": "^2.2"
     },
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "ext-intl": "*",
         "thecodingmachine/safe": "^3.0"
     },
