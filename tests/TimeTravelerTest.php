@@ -6,6 +6,7 @@ namespace AssoConnect\PHPDate\Tests;
 
 use AssoConnect\PHPDate\AbsoluteDate;
 use AssoConnect\PHPDate\TimeTraveler;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class TimeTravelerTest extends TestCase
@@ -17,7 +18,7 @@ class TimeTravelerTest extends TestCase
         $this->timeTraveler = new TimeTraveler();
     }
 
-    /** @dataProvider provideAddMonths */
+    #[DataProvider('provideAddMonths')]
     public function testAddMonth(string $from, string $expected): void
     {
         self::assertSame($expected, $this->timeTraveler->addMonth(new AbsoluteDate($from))->__toString());
@@ -35,7 +36,7 @@ class TimeTravelerTest extends TestCase
         yield ['2020-06-30', '2020-07-31'];
     }
 
-    /** @dataProvider provideRemoveMonths */
+    #[DataProvider('provideRemoveMonths')]
     public function testRemoveMonth(string $from, string $expected): void
     {
         self::assertSame($expected, $this->timeTraveler->removeMonth(new AbsoluteDate($from))->__toString());
@@ -67,7 +68,7 @@ class TimeTravelerTest extends TestCase
         }
     }
 
-    /** @dataProvider provideMonthsWithReference */
+    #[DataProvider('provideMonthsWithReference')]
     public function testAddMonthWithReference(string $reference, string $from, string $expected): void
     {
         self::assertSame($expected, $this->timeTraveler->addMonthWithReference(
@@ -91,9 +92,48 @@ class TimeTravelerTest extends TestCase
         yield ['2020-06-30', '2020-06-30', '2020-07-31'];
         yield ['2020-06-30', '2020-07-31', '2020-08-31'];
         yield ['2020-06-30', '2020-08-31', '2020-09-30'];
+
+        // $from drifted away from the reference day: the result is the occurrence of that day nearest to one
+        // month after $from
+        yield ['2020-01-31', '2020-08-01', '2020-08-31'];
+        yield ['2020-01-31', '2020-08-02', '2020-08-31'];
+        yield ['2020-01-31', '2020-08-14', '2020-08-31'];
+        yield ['2020-01-31', '2020-08-16', '2020-09-30'];
+        yield ['2020-01-29', '2020-05-01', '2020-05-29'];
+        yield ['2020-01-15', '2020-08-20', '2020-09-15'];
+        yield ['2020-01-15', '2020-01-10', '2020-02-15'];
+        yield ['2020-01-15', '2020-01-20', '2020-02-15'];
+        yield ['2020-01-31', '2020-07-30', '2020-08-31'];
+        yield ['2020-01-01', '2020-01-31', '2020-03-01'];
+        yield ['2020-01-15', '2020-01-31', '2020-02-15'];
+        // two occurrences equally near: the later one
+        yield ['2020-01-31', '2020-08-15', '2020-09-30'];
+        yield ['2025-01-31', '2025-05-15', '2025-06-30'];
+        // the reference day is clamped to a shorter month
+        yield ['2020-01-31', '2020-02-10', '2020-02-29'];
+        yield ['2021-01-31', '2021-02-10', '2021-02-28'];
+        // a reference on the last day of its month means the last day of every month
+        yield ['2020-04-30', '2020-08-10', '2020-08-31'];
+        yield ['2021-02-28', '2021-03-10', '2021-03-31'];
     }
 
-    /** @dataProvider provideMonthsWithReferenceOverYear */
+    /**
+     * A date that drifted away from the reference day rejoins it at the very next step, and every later step
+     * lands on the reference day of the following month.
+     */
+    public function testAddMonthWithReferenceRejoinsTheReferenceDayAfterADrift(): void
+    {
+        $reference = new AbsoluteDate('2020-01-31');
+        $actual = new AbsoluteDate('2020-08-02');
+
+        foreach (['2020-08-31', '2020-09-30', '2020-10-31', '2020-11-30', '2020-12-31', '2021-01-31'] as $expected) {
+            $actual = $this->timeTraveler->addMonthWithReference($reference, $actual);
+
+            self::assertSame($expected, $actual->__toString());
+        }
+    }
+
+    #[DataProvider('provideMonthsWithReferenceOverYear')]
     public function testAddMonthWithReferenceWorksYearOverYear(string $referenceAsString, string $expected): void
     {
         $reference = new AbsoluteDate($referenceAsString);
@@ -117,7 +157,7 @@ class TimeTravelerTest extends TestCase
         yield ['2020-06-30', '2021-06-30'];
     }
 
-    /** @dataProvider provideYears */
+    #[DataProvider('provideYears')]
     public function testAddYear(string $from, string $expected): void
     {
         self::assertSame($expected, $this->timeTraveler->addYear(new AbsoluteDate($from))->__toString());

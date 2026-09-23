@@ -47,7 +47,16 @@ class TimeTraveler
     }
 
     /**
-     * Ensures that months calculation are coherent year over year
+     * The occurrence of the reference day of month that is the nearest to one month after $from
+     *
+     * A date that drifted away from the reference day rejoins it at the nearest occurrence after $from, the
+     * result staying between half a month and a month and a half away:
+     * addMonthWithReference(2020-01-31, 2020-08-01) = 2020-08-31, not 2020-09-30
+     * addMonthWithReference(2020-01-31, 2020-08-16) = 2020-09-30
+     * When two occurrences are equally near, the later one wins: the result is then never less than a month away.
+     *
+     * A $from on the reference day gets the reference day of the following month, which keeps months calculation
+     * coherent year over year where addMonth() alone drifts after a shorter month:
      *
      * (new AbsoluteDate(2020-01-31))->modify('+1 year') = 2021-01-31
      * (new AbsoluteDate(2020-01-31))
@@ -66,14 +75,47 @@ class TimeTraveler
      */
     public function addMonthWithReference(AbsoluteDate $reference, AbsoluteDate $from): AbsoluteDate
     {
-        $next = $this->addMonth($from);
+        $target = $this->addMonth($from);
+
+        $nearest = null;
+        $nearestDistance = null;
+        foreach ([$from, $target, $this->addMonth($target)] as $month) {
+            $candidate = $this->referenceDayWithinMonthOf($month, $reference);
+            if (!$from->isBefore($candidate)) {
+                continue;
+            }
+            $distance = $this->daysBetween($candidate, $target);
+            if (null === $nearestDistance || $distance <= $nearestDistance) {
+                $nearest = $candidate;
+                $nearestDistance = $distance;
+            }
+        }
+
+        \assert(null !== $nearest);
+
+        return $nearest;
+    }
+
+    private function daysBetween(AbsoluteDate $first, AbsoluteDate $second): int
+    {
+        $timezone = new \DateTimeZone('UTC');
+
+        return intval($first->startsAt($timezone)->diff($second->startsAt($timezone))->days);
+    }
+
+    /**
+     * The reference day placed in the month of $date, clamped to that month's length — or that month's last day
+     * when the reference is itself the last day of its own month
+     */
+    private function referenceDayWithinMonthOf(AbsoluteDate $date, AbsoluteDate $reference): AbsoluteDate
+    {
         $day = min(
             intval($reference->format('j')),
-            intval($next->modify('last day of this month')->format('j'))
+            intval($date->modify('last day of this month')->format('j'))
         );
         $dayString = str_pad(strval($day), 2, '0', STR_PAD_LEFT);
         return $this->modifyForTheLastDayOfThisMonthIfNeedBe(
-            new AbsoluteDate($next->format('Y-m') . '-' . $dayString),
+            new AbsoluteDate($date->format('Y-m') . '-' . $dayString),
             $reference
         );
     }
