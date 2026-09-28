@@ -47,13 +47,14 @@ class TimeTraveler
     }
 
     /**
-     * The occurrence of the reference day of month that is the nearest to one month after $from
+     * The last occurrence of the reference day of month that is at most one month after $from
      *
-     * A date that drifted away from the reference day rejoins it at the nearest occurrence after $from, the
-     * result staying between half a month and a month and a half away:
+     * The result never goes past addMonth($from). When the reference day of that month is already past it, the
+     * result steps back to the reference day of the month of $from, so a date that drifted away from the
+     * reference day rejoins it without ever spanning more than a month:
      * addMonthWithReference(2020-01-31, 2020-08-01) = 2020-08-31, not 2020-09-30
-     * addMonthWithReference(2020-01-31, 2020-08-16) = 2020-09-30
-     * When two occurrences are equally near, the later one wins: the result is then never less than a month away.
+     * addMonthWithReference(2020-01-31, 2020-08-16) = 2020-08-31
+     * addMonthWithReference(2020-01-15, 2020-08-20) = 2020-09-15
      *
      * A $from on the reference day gets the reference day of the following month, which keeps months calculation
      * coherent year over year where addMonth() alone drifts after a shorter month:
@@ -75,32 +76,14 @@ class TimeTraveler
      */
     public function addMonthWithReference(AbsoluteDate $reference, AbsoluteDate $from): AbsoluteDate
     {
-        $target = $this->addMonth($from);
+        $oneMonthLater = $this->addMonth($from);
 
-        $nearest = null;
-        $nearestDistance = null;
-        foreach ([$from, $target, $this->addMonth($target)] as $month) {
-            $candidate = $this->referenceDayWithinMonthOf($month, $reference);
-            if (!$from->isBefore($candidate)) {
-                continue;
-            }
-            $distance = $this->daysBetween($candidate, $target);
-            if (null === $nearestDistance || $distance <= $nearestDistance) {
-                $nearest = $candidate;
-                $nearestDistance = $distance;
-            }
+        $inTheMonthAfter = $this->referenceDayWithinMonthOf($oneMonthLater, $reference);
+        if ($inTheMonthAfter->isBeforeOrEqualTo($oneMonthLater)) {
+            return $inTheMonthAfter;
         }
 
-        \assert(null !== $nearest);
-
-        return $nearest;
-    }
-
-    private function daysBetween(AbsoluteDate $first, AbsoluteDate $second): int
-    {
-        $timezone = new \DateTimeZone('UTC');
-
-        return intval($first->startsAt($timezone)->diff($second->startsAt($timezone))->days);
+        return $this->referenceDayWithinMonthOf($from, $reference);
     }
 
     /**
