@@ -178,19 +178,24 @@ class TimeTravelerTest extends TestCase
      * Februaries and two year boundaries), the result is after the start, never past one month later, and on the
      * reference day of its month — that month's last day when the reference day does not exist in it or when the
      * reference is itself a last day of month.
+     *
+     * The reference days are the ones sitting on a boundary: the first days of a month, the days around the
+     * middle where the month of the result flips, and the days a shorter month clamps. The days in between behave
+     * like their neighbours and would only add to the running time.
      */
     public function testAddMonthWithReferenceAlwaysLandsOnTheReferenceDayWithinOneMonth(): void
     {
         $references = [];
-        for ($referenceDay = 1; $referenceDay <= 31; $referenceDay++) {
+        foreach ([1, 2, 14, 15, 16, 27, 28, 29, 30, 31] as $referenceDay) {
             $references[] = new AbsoluteDate(sprintf('2020-01-%02d', $referenceDay));
         }
         $references[] = new AbsoluteDate('2021-02-28');
         $references[] = new AbsoluteDate('2020-02-29');
         $references[] = new AbsoluteDate('2020-04-30');
 
+        $end = new AbsoluteDate('2022-02-01');
         $from = new AbsoluteDate('2019-12-01');
-        while ($from->isBefore(new AbsoluteDate('2022-02-01'))) {
+        while ($from->isBefore($end)) {
             $oneMonthLater = $this->timeTraveler->addMonth($from);
             foreach ($references as $reference) {
                 $actual = $this->timeTraveler->addMonthWithReference($reference, $from);

@@ -55,6 +55,8 @@ class TimeTraveler
      * addMonthWithReference(2020-01-31, 2020-08-01) = 2020-08-31, not 2020-09-30
      * addMonthWithReference(2020-01-31, 2020-08-16) = 2020-08-31
      * addMonthWithReference(2020-01-15, 2020-08-20) = 2020-09-15
+     * The result may be the very next day when $from is the day before the reference day:
+     * addMonthWithReference(2020-01-31, 2020-07-30) = 2020-07-31
      *
      * A $from on the reference day gets the reference day of the following month, which keeps months calculation
      * coherent year over year where addMonth() alone drifts after a shorter month:
