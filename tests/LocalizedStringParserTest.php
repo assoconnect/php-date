@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace AssoConnect\PHPDate\Tests;
 
 use AssoConnect\PHPDate\LocalizedStringParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class LocalizedStringParserTest extends TestCase
 {
-    /** @dataProvider provideStringsAndLocales */
+    #[DataProvider('provideStringsAndLocales')]
     public function testCreateFromLocaleWorks(string $formattedDate, string $locale, string $date): void
     {
         $parser = new LocalizedStringParser();

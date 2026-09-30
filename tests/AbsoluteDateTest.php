@@ -6,6 +6,7 @@ namespace AssoConnect\PHPDate\Tests;
 
 use AssoConnect\PHPDate\AbsoluteDate;
 use AssoConnect\PHPDate\Exception\ParsingException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class AbsoluteDateTest extends TestCase
@@ -47,7 +48,7 @@ class AbsoluteDateTest extends TestCase
         self::assertSame('2020-02-02', $newDate->format());
     }
 
-    /** @dataProvider providerModifyEnforcePattern */
+    #[DataProvider('providerModifyEnforcePattern')]
     public function testModifyEnforcePattern(string $pattern, bool $patternIsValid): void
     {
         if ($patternIsValid) {
@@ -154,7 +155,7 @@ class AbsoluteDateTest extends TestCase
         self::assertSame('2022-01-01', unserialize($serialized)->format());
     }
 
-    /** @dataProvider providerSerializedData */
+    #[DataProvider('providerSerializedData')]
     public function testUnserialization(string $serialized): void
     {
         self::assertSame('2022-01-01', unserialize($serialized)->format());
