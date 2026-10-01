@@ -47,19 +47,7 @@ class TimeTraveler
     }
 
     /**
-     * The last occurrence of the reference day of month that is at most one month after $from
-     *
-     * The result never goes past addMonth($from). When the reference day of that month is already past it, the
-     * result steps back to the reference day of the month of $from, so a date that drifted away from the
-     * reference day rejoins it without ever spanning more than a month:
-     * addMonthWithReference(2020-01-31, 2020-08-01) = 2020-08-31, not 2020-09-30
-     * addMonthWithReference(2020-01-31, 2020-08-16) = 2020-08-31
-     * addMonthWithReference(2020-01-15, 2020-08-20) = 2020-09-15
-     * The result may be the very next day when $from is the day before the reference day:
-     * addMonthWithReference(2020-01-31, 2020-07-30) = 2020-07-31
-     *
-     * A $from on the reference day gets the reference day of the following month, which keeps months calculation
-     * coherent year over year where addMonth() alone drifts after a shorter month:
+     * Ensures that months calculation are coherent year over year
      *
      * (new AbsoluteDate(2020-01-31))->modify('+1 year') = 2021-01-31
      * (new AbsoluteDate(2020-01-31))
@@ -78,29 +66,14 @@ class TimeTraveler
      */
     public function addMonthWithReference(AbsoluteDate $reference, AbsoluteDate $from): AbsoluteDate
     {
-        $oneMonthLater = $this->addMonth($from);
-
-        $inTheMonthAfter = $this->referenceDayWithinMonthOf($oneMonthLater, $reference);
-        if ($inTheMonthAfter->isBeforeOrEqualTo($oneMonthLater)) {
-            return $inTheMonthAfter;
-        }
-
-        return $this->referenceDayWithinMonthOf($from, $reference);
-    }
-
-    /**
-     * The reference day placed in the month of $date, clamped to that month's length — or that month's last day
-     * when the reference is itself the last day of its own month
-     */
-    private function referenceDayWithinMonthOf(AbsoluteDate $date, AbsoluteDate $reference): AbsoluteDate
-    {
+        $next = $this->addMonth($from);
         $day = min(
             intval($reference->format('j')),
-            intval($date->modify('last day of this month')->format('j'))
+            intval($next->modify('last day of this month')->format('j'))
         );
         $dayString = str_pad(strval($day), 2, '0', STR_PAD_LEFT);
         return $this->modifyForTheLastDayOfThisMonthIfNeedBe(
-            new AbsoluteDate($date->format('Y-m') . '-' . $dayString),
+            new AbsoluteDate($next->format('Y-m') . '-' . $dayString),
             $reference
         );
     }
