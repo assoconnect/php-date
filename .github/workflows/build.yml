@@ -57,7 +57,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectName=php-date
-            -Dsonar.projectKey=assoconnect_php-date-bundle
+            -Dsonar.projectKey=assoconnect_php-date
             -Dsonar.organization=assoconnect
             -Dsonar.sources=src
             -Dsonar.tests=tests
